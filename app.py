@@ -41,10 +41,11 @@ HTML = """<!doctype html>
     <meta charset=\"utf-8\" />
     <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />
     <title>Alexa Marketing Playground</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap" rel="stylesheet">
     <style>
       :root {
         color-scheme: light dark;
-        font-family: Arial, Helvetica, sans-serif;
+        font-family: 'Fredoka One', cursive;
       }
       body {
         margin: 0;
@@ -82,6 +83,7 @@ HTML = """<!doctype html>
     <main class=\"card\">
       <h1>Alexa Marketing Playground</h1>
       <p>This starter page is generated from <code>app.py</code> and deployed via GitHub Pages.</p>
+      <p>Fun fact: Alexa can speak 8 languages and has over 100,000 skills to help with everything from ordering pizza to controlling smart home devices!</p>
       <p id=\"build-time\"></p>
     </main>
     <script>
