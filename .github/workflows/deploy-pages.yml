@@ -3,9 +3,6 @@ name: Deploy Alexa Marketing Playground
 on:
   push:
     branches: ["main"]
-    paths:
-      - "app.py"
-      - ".github/workflows/deploy-pages.yml"
   workflow_dispatch:
 
 permissions:
@@ -27,21 +24,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-
-      - name: Install dependencies
-        run: pip install Flask
-
-      - name: Build static site from app.py
-        run: python app.py --build
-
       - name: Upload static artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: dist
+          path: .
 
       - name: Deploy to GitHub Pages
         id: deploy
