@@ -13,7 +13,7 @@
         min-height: 100vh;
         display: grid;
         place-items: center;
-        background: linear-gradient(120deg, #232f3e, #00a8e1);
+        background: red;
         color: #fff;
       }
       .alexa-corner {
@@ -64,6 +64,13 @@
         display: none;
         margin-top: 1rem;
       }
+      #pricing-list {
+        display: none;
+        margin-top: 1rem;
+      }
+      #pricing-list.show {
+        display: block;
+      }
       #facts-list.show {
         display: block;
       }
@@ -98,6 +105,14 @@
         <li>Alexa can play music, podcasts, audiobooks, and radio stations.</li>
         <li>Developers can build voice apps for Alexa called Skills.</li>
       </ul>
+      <button id="pricing-toggle" type="button">Show pricing for Alexa products</button>
+      <ul id="pricing-list">
+        <li>Echo Dot (5th Gen) — $49.99</li>
+        <li>Echo (5th Gen) — $99.99</li>
+        <li>Echo Show 8 — $129.99</li>
+        <li>Echo Studio — $199.99</li>
+        <li>Echo Pop — $39.99</li>
+      </ul>
       <p id="build-time"></p>
     </main>
     <script>
@@ -111,6 +126,14 @@
         factsToggle.textContent = factsList.classList.contains("show")
           ? "Hide fun facts"
           : "Show 5 fun facts about Alexa";
+      });
+      const pricingToggle = document.getElementById("pricing-toggle");
+      const pricingList = document.getElementById("pricing-list");
+      pricingToggle.addEventListener("click", () => {
+        pricingList.classList.toggle("show");
+        pricingToggle.textContent = pricingList.classList.contains("show")
+          ? "Hide pricing"
+          : "Show pricing for Alexa products";
       });
     </script>
   </body>
