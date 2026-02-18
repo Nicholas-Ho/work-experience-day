@@ -13,7 +13,10 @@
         min-height: 100vh;
         display: grid;
         place-items: center;
-        background: linear-gradient(120deg, #ff5f6d, #ffc371);
+        background: radial-gradient(circle at 85% 15%, rgba(0,162,255,0.38) 0%, rgba(0,162,255,0.16) 8%, transparent 28%),
+              linear-gradient(180deg, #071226 0%, #001a33 60%, #001f3f 100%);
+        background-color: #001a33;
+        background-attachment: fixed;
         color: #fff;
       }
       .alexa-corner {
@@ -168,10 +171,9 @@
       </ul>
       <div class="accessibility" aria-labelledby="accessibility-heading">
         <h3 id="accessibility-heading">Accessibility Help</h3>
-        <p>Speech-to-text lets you speak and see live transcription.</p>
-        <button id="stt-toggle" type="button" aria-pressed="false">Start Speech-to-Text</button>
+        <p>Accessibility tools: enter text or paste a transcript, then use Read Transcript.</p>
         <button id="tts-button" type="button">Read Transcript</button>
-        <div id="stt-status" aria-live="polite" style="margin-top:.5rem">Speech recognition is not active.</div>
+        <div id="access-status" aria-live="polite" style="margin-top:.5rem">Accessibility features ready.</div>
         <textarea id="transcript" rows="4" aria-label="Speech transcript" placeholder="Transcript will appear here"></textarea>
         <h4 style="margin-top:1rem">Language Translator</h4>
         <textarea id="translate-input" rows="3" aria-label="Text to translate" placeholder="Enter text to translate"></textarea>
@@ -236,78 +238,16 @@
         const body = encodeURIComponent("Hi,%0A%0AI need help with my Alexa product. Please advise.%0A%0AThanks,");
         window.location.href = `mailto:support@example.com?subject=${subject}&body=${body}`;
       });
-      // Accessibility: Speech-to-text (STT) + Text-to-speech (TTS)
-      const sttToggle = document.getElementById('stt-toggle');
+      // Accessibility: Text-to-speech (TTS)
       const transcriptEl = document.getElementById('transcript');
-      const sttStatus = document.getElementById('stt-status');
       const ttsButton = document.getElementById('tts-button');
-      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-      let recognition;
-      let recognizing = false;
-      if (SpeechRecognition) {
-        recognition = new SpeechRecognition();
-        recognition.lang = 'en-US';
-        recognition.interimResults = true;
-        recognition.continuous = true;
-        recognition.onstart = () => {
-          recognizing = true;
-          sttToggle.textContent = 'Stop Speech-to-Text';
-          sttToggle.setAttribute('aria-pressed', 'true');
-          sttStatus.textContent = 'Listening...';
-        };
-        recognition.onend = () => {
-          recognizing = false;
-          sttToggle.textContent = 'Start Speech-to-Text';
-          sttToggle.setAttribute('aria-pressed', 'false');
-          sttStatus.textContent = 'Stopped.';
-        };
-        recognition.onerror = (e) => {
-          const err = e.error || 'unknown';
-          if (err === 'not-allowed' || err === 'service-not-allowed') sttStatus.textContent = 'Microphone permission denied.';
-          else if (err === 'no-speech') sttStatus.textContent = 'No speech was detected. Try speaking louder or check your microphone.';
-          else if (err === 'audio-capture') sttStatus.textContent = 'No microphone was found. Check your device settings.';
-          else sttStatus.textContent = 'Error: ' + err;
-        };
-        recognition.onresult = (event) => {
-          let interim = '';
-          let final = transcriptEl.value || '';
-          for (let i = event.resultIndex; i < event.results.length; ++i) {
-            if (event.results[i].isFinal) {
-              final += event.results[i][0].transcript;
-            } else {
-              interim += event.results[i][0].transcript;
-            }
-          }
-          transcriptEl.value = final + interim;
-        };
-        sttToggle.addEventListener('click', async () => {
-          try {
-            if (recognizing) {
-              recognition.stop();
-              return;
-            }
-            // Request microphone permission first to avoid immediate stop in some browsers
-            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-              try {
-                await navigator.mediaDevices.getUserMedia({ audio: true });
-              } catch (permErr) {
-                sttStatus.textContent = 'Microphone access denied.';
-                return;
-              }
-            }
-            recognition.start();
-          } catch (err) {
-            sttStatus.textContent = 'Speech recognition error: ' + (err.message || err);
-          }
-        });
-      } else {
-        sttToggle.disabled = true;
-        sttStatus.textContent = 'Speech recognition not supported by this browser.';
-      }
+      const accessStatus = document.getElementById('access-status');
       ttsButton.addEventListener('click', () => {
         const text = transcriptEl.value.trim();
-        if (!text) { sttStatus.textContent = 'No transcript to read.'; return; }
+        if (!text) { accessStatus.textContent = 'No transcript to read.'; return; }
         const utter = new SpeechSynthesisUtterance(text);
+        accessStatus.textContent = 'Reading...';
+        utter.onend = () => { accessStatus.textContent = 'Done.'; };
         window.speechSynthesis.speak(utter);
       });
       // Translator: use LibreTranslate public instance with graceful error handling
