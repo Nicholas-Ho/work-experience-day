@@ -167,8 +167,12 @@
         <li>Add a headline and call-to-action</li>
         <li>Make it fun and memorable</li>
       </ul>
-      <button id="lang-toggle" type="button">Français</button>
-      <button id="facts-toggle" type="button">Show 5 fun facts about Alexa</button>
+      <div class="actions" role="toolbar" aria-label="Main actions">
+        <button id="lang-toggle" type="button" class="btn btn-primary">Français</button>
+        <button id="facts-toggle" type="button" class="btn btn-secondary">Show 5 fun facts about Alexa</button>
+        <button id="pricing-toggle" type="button" class="btn btn-secondary">Show pricing for Alexa products</button>
+        <button id="help-button" type="button" class="btn btn-primary">Contact Customer Help</button>
+      </div>
       <ul id="facts-list">
         <li>Alexa can set timers, alarms, and reminders with simple voice commands.</li>
         <li>It can control many smart-home devices like lights, plugs, and thermostats.</li>
@@ -176,7 +180,6 @@
         <li>Alexa can play music, podcasts, audiobooks, and radio stations.</li>
         <li>Developers can build voice apps for Alexa called Skills.</li>
       </ul>
-      <button id="pricing-toggle" type="button">Show pricing for Alexa products</button>
       <ul id="pricing-list">
         <li>Echo Dot (5th Gen) — $49.99</li>
         <li>Echo (5th Gen) — $99.99</li>
@@ -184,7 +187,7 @@
         <li>Echo Studio — $199.99</li>
         <li>Echo Pop — $39.99</li>
       </ul>
-      <button id="help-button" type="button">Contact Customer Help</button>
+      
       <h2>Most Popular Alexa Products</h2>
       <ul id="popular-products">
         <li>Echo Dot (Compact smart speaker)</li>
@@ -197,7 +200,7 @@
       <div class="accessibility" aria-labelledby="accessibility-heading">
         <h3 id="accessibility-heading">Accessibility Help</h3>
         <p>Accessibility tools: enter text or paste a transcript, then use Read Transcript.</p>
-        <button id="tts-button" type="button">Read Transcript</button>
+        <button id="tts-button" type="button" class="btn btn-ghost">Read Transcript</button>
         <div id="access-status" aria-live="polite" style="margin-top:.5rem">Accessibility features ready.</div>
         <textarea id="transcript" rows="4" aria-label="Speech transcript" placeholder="Transcript will appear here"></textarea>
         <h4 style="margin-top:1rem">Language Translator</h4>
@@ -230,7 +233,7 @@
             <option value="zh">Chinese</option>
             <option value="ru">Russian</option>
           </select>
-          <button id="translate-btn" type="button">Translate</button>
+          <button id="translate-btn" type="button" class="btn btn-secondary">Translate</button>
         </div>
         <div id="translate-status" aria-live="polite" style="margin-top:.5rem"></div>
         <textarea id="translate-output" rows="3" aria-label="Translated text" placeholder="Translation will appear here" readonly></textarea>
