@@ -71,6 +71,49 @@
       #pricing-list.show {
         display: block;
       }
+      .accessibility {
+        margin-top: 1rem;
+        text-align: center;
+      }
+      .visually-hidden {
+        position: absolute;
+        left: -9999px;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+      }
+      #transcript {
+        width: 100%;
+        max-width: 680px;
+        margin-top: 0.5rem;
+        padding: 0.6rem;
+        border-radius: 8px;
+        border: 1px solid rgba(255,255,255,0.12);
+        background: rgba(255,255,255,0.03);
+        color: #fff;
+      }
+      #translate-input, #translate-output {
+        width: 100%;
+        max-width: 680px;
+        margin-top: 0.5rem;
+        padding: 0.6rem;
+        border-radius: 8px;
+        border: 1px solid rgba(255,255,255,0.12);
+        background: rgba(255,255,255,0.03);
+        color: #fff;
+      }
+      .translator-row {
+        display: flex;
+        gap: 0.5rem;
+        justify-content: center;
+        margin-top: 0.5rem;
+        flex-wrap: wrap;
+      }
+      select, textarea {
+        font: inherit;
+        color: inherit;
+        background: transparent;
+      }
       #facts-list.show {
         display: block;
       }
@@ -123,6 +166,14 @@
         <li>Echo Pop (Small, affordable speaker)</li>
         <li>Echo Buds (Wireless earbuds with Alexa)</li>
       </ul>
+      <div class="accessibility" aria-labelledby="accessibility-heading">
+        <h3 id="accessibility-heading">Accessibility Help</h3>
+        <p>Speech-to-text lets you speak and see live transcription.</p>
+        <button id="stt-toggle" type="button" aria-pressed="false">Start Speech-to-Text</button>
+        <button id="tts-button" type="button">Read Transcript</button>
+        <div id="stt-status" aria-live="polite" style="margin-top:.5rem">Speech recognition is not active.</div>
+        <textarea id="transcript" rows="4" aria-label="Speech transcript" placeholder="Transcript will appear here"></textarea>
+      </div>
       <p id="build-time"></p>
     </main>
     <script>
@@ -150,6 +201,64 @@
         const subject = encodeURIComponent("Help with Alexa product");
         const body = encodeURIComponent("Hi,%0A%0AI need help with my Alexa product. Please advise.%0A%0AThanks,");
         window.location.href = `mailto:support@example.com?subject=${subject}&body=${body}`;
+      });
+      // Accessibility: Speech-to-text (STT) + Text-to-speech (TTS)
+      const sttToggle = document.getElementById('stt-toggle');
+      const transcriptEl = document.getElementById('transcript');
+      const sttStatus = document.getElementById('stt-status');
+      const ttsButton = document.getElementById('tts-button');
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      let recognition;
+      let recognizing = false;
+      if (SpeechRecognition) {
+        recognition = new SpeechRecognition();
+        recognition.lang = 'en-US';
+        recognition.interimResults = true;
+        recognition.continuous = true;
+        recognition.onstart = () => {
+          recognizing = true;
+          sttToggle.textContent = 'Stop Speech-to-Text';
+          sttToggle.setAttribute('aria-pressed', 'true');
+          sttStatus.textContent = 'Listening...';
+        };
+        recognition.onend = () => {
+          recognizing = false;
+          sttToggle.textContent = 'Start Speech-to-Text';
+          sttToggle.setAttribute('aria-pressed', 'false');
+          sttStatus.textContent = 'Stopped.';
+        };
+        recognition.onerror = (e) => {
+          sttStatus.textContent = 'Error: ' + (e.error || 'unknown');
+        };
+        recognition.onresult = (event) => {
+          let interim = '';
+          let final = transcriptEl.value || '';
+          for (let i = event.resultIndex; i < event.results.length; ++i) {
+            if (event.results[i].isFinal) {
+              final += event.results[i][0].transcript;
+            } else {
+              interim += event.results[i][0].transcript;
+            }
+          }
+          transcriptEl.value = final + interim;
+        };
+        sttToggle.addEventListener('click', () => {
+          try {
+            if (recognizing) recognition.stop();
+            else recognition.start();
+          } catch (err) {
+            sttStatus.textContent = 'Speech recognition error: ' + err.message;
+          }
+        });
+      } else {
+        sttToggle.disabled = true;
+        sttStatus.textContent = 'Speech recognition not supported by this browser.';
+      }
+      ttsButton.addEventListener('click', () => {
+        const text = transcriptEl.value.trim();
+        if (!text) { sttStatus.textContent = 'No transcript to read.'; return; }
+        const utter = new SpeechSynthesisUtterance(text);
+        window.speechSynthesis.speak(utter);
       });
     </script>
   </body>
