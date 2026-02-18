@@ -96,15 +96,16 @@
         background: rgba(255,255,255,0.03);
         color: #fff;
       }
+      /* Translator inputs use black text on white for readability */
       #translate-input, #translate-output {
         width: 100%;
         max-width: 680px;
         margin-top: 0.5rem;
         padding: 0.6rem;
         border-radius: 8px;
-        border: 1px solid rgba(255,255,255,0.12);
-        background: rgba(255,255,255,0.03);
-        color: #fff;
+        border: 1px solid rgba(0,0,0,0.12);
+        background: #ffffff;
+        color: #000;
       }
       .translator-row {
         display: flex;
@@ -113,11 +114,15 @@
         margin-top: 0.5rem;
         flex-wrap: wrap;
       }
-      select, textarea {
+      .translator-row select {
         font: inherit;
-        color: inherit;
-        background: transparent;
+        color: #000;
+        background: #fff;
+        border: 1px solid rgba(0,0,0,0.12);
+        padding: 0.4rem 0.6rem;
+        border-radius: 6px;
       }
+      .translator-row select option { color: #000; background: #fff; }
       #facts-list.show {
         display: block;
       }
@@ -138,12 +143,13 @@
     />
     <main class="card">
       <h1>Alexa Marketing Playground</h1>
-      <p>Build a simple marketing page for Alexa with your team.</p>
-      <ul>
+      <p id="intro-p">Build a simple marketing page for Alexa with your team.</p>
+      <ul id="features-list">
         <li>Change colors, fonts, and layout</li>
         <li>Add a headline and call-to-action</li>
         <li>Make it fun and memorable</li>
       </ul>
+      <button id="lang-toggle" type="button">Français</button>
       <button id="facts-toggle" type="button">Show 5 fun facts about Alexa</button>
       <ul id="facts-list">
         <li>Alexa can set timers, alarms, and reminders with simple voice commands.</li>
@@ -215,43 +221,130 @@
     </main>
     <script>
       const now = new Date();
-      document.getElementById("build-time").textContent =
-        `Loaded at ${now.toLocaleString()}`;
-      const factsToggle = document.getElementById("facts-toggle");
-      const factsList = document.getElementById("facts-list");
-      factsToggle.addEventListener("click", () => {
-        factsList.classList.toggle("show");
-        factsToggle.textContent = factsList.classList.contains("show")
-          ? "Hide fun facts"
-          : "Show 5 fun facts about Alexa";
+      document.getElementById("build-time").textContent = `Loaded at ${now.toLocaleString()}`;
+      let currentLang = 'en';
+      const translations = {
+        title: { en: 'Alexa Marketing Playground', fr: 'Espace marketing Alexa' },
+        h1: { en: 'Alexa Marketing Playground', fr: 'Espace marketing Alexa' },
+        intro_p: { en: 'Build a simple marketing page for Alexa with your team.', fr: 'Créez une page marketing simple pour Alexa avec votre équipe.' },
+        features_list: {
+          en: '<li>Change colors, fonts, and layout</li><li>Add a headline and call-to-action</li><li>Make it fun and memorable</li>',
+          fr: '<li>Modifiez les couleurs, les polices et la mise en page</li><li>Ajoutez un titre et un appel à l\'action</li><li>Rendez-la amusante et mémorable</li>'
+        },
+        facts_toggle_show: { en: 'Show 5 fun facts about Alexa', fr: 'Afficher 5 faits amusants sur Alexa' },
+        facts_toggle_hide: { en: 'Hide fun facts', fr: 'Masquer les faits amusants' },
+        facts_list: {
+          en: '<li>Alexa can set timers, alarms, and reminders with simple voice commands.</li><li>It can control many smart-home devices like lights, plugs, and thermostats.</li><li>You can create custom voice commands with Alexa Routines.</li><li>Alexa can play music, podcasts, audiobooks, and radio stations.</li><li>Developers can build voice apps for Alexa called Skills.</li>',
+          fr: '<li>Alexa peut régler des minuteries, des alarmes et des rappels par commandes vocales simples.</li><li>Elle peut contrôler de nombreux appareils domotiques comme les lumières, les prises et les thermostats.</li><li>Vous pouvez créer des commandes vocales personnalisées avec les routines Alexa.</li><li>Alexa peut lire de la musique, des podcasts, des livres audio et des stations de radio.</li><li>Les développeurs peuvent créer des applications vocales pour Alexa appelées Skills.</li>'
+        },
+        pricing_toggle_show: { en: 'Show pricing for Alexa products', fr: 'Afficher les prix des produits Alexa' },
+        pricing_toggle_hide: { en: 'Hide pricing', fr: 'Masquer les prix' },
+        pricing_list: {
+          en: '<li>Echo Dot (5th Gen) — $49.99</li><li>Echo (5th Gen) — $99.99</li><li>Echo Show 8 — $129.99</li><li>Echo Studio — $199.99</li><li>Echo Pop — $39.99</li>',
+          fr: '<li>Echo Dot (5e génération) — 49,99 $</li><li>Echo (5e génération) — 99,99 $</li><li>Echo Show 8 — 129,99 $</li><li>Echo Studio — 199,99 $</li><li>Echo Pop — 39,99 $</li>'
+        },
+        help_button: { en: 'Contact Customer Help', fr: 'Contacter le service client' },
+        popular_heading: { en: 'Most Popular Alexa Products', fr: 'Produits Alexa les plus populaires' },
+        popular_products: {
+          en: '<li>Echo Dot (Compact smart speaker)</li><li>Echo (Full-range smart speaker)</li><li>Echo Show 8 (Smart display)</li><li>Echo Studio (High-fidelity speaker)</li><li>Echo Pop (Small, affordable speaker)</li><li>Echo Buds (Wireless earbuds with Alexa)</li>',
+          fr: '<li>Echo Dot (enceinte compacte intelligente)</li><li>Echo (enceinte intelligente)</li><li>Echo Show 8 (écran connecté)</li><li>Echo Studio (enceinte haute-fidélité)</li><li>Echo Pop (petite enceinte abordable)</li><li>Echo Buds (écouteurs sans fil avec Alexa)</li>'
+        },
+        access_heading: { en: 'Accessibility Help', fr: 'Aide accessibilité' },
+        access_intro: { en: 'Accessibility tools: enter text or paste a transcript, then use Read Transcript.', fr: "Outils d'accessibilité : saisissez du texte ou collez une transcription, puis utilisez Lire la transcription." },
+        tts_button: { en: 'Read Transcript', fr: 'Lire la transcription' },
+        access_status_ready: { en: 'Accessibility features ready.', fr: 'Fonctions d\'accessibilité prêtes.' },
+        access_status_no_text: { en: 'No transcript to read.', fr: 'Aucune transcription à lire.' },
+        access_status_reading: { en: 'Reading...', fr: 'Lecture...' },
+        access_status_done: { en: 'Done.', fr: 'Terminé.' },
+        transcript_placeholder: { en: 'Transcript will appear here', fr: 'La transcription apparaîtra ici' },
+        translate_section: { en: 'Language Translator', fr: 'Traducteur' },
+        translate_input_placeholder: { en: 'Enter text to translate', fr: 'Entrez le texte à traduire' },
+        translate_output_placeholder: { en: 'Translation will appear here', fr: 'La traduction apparaîtra ici' },
+        translate_btn: { en: 'Translate', fr: 'Traduire' },
+        translate_enter_text: { en: 'Enter text to translate.', fr: 'Entrez le texte à traduire.' },
+        translate_translating: { en: 'Translating...', fr: 'Traduction en cours...' },
+        translate_done: { en: 'Done.', fr: 'Terminé.' },
+        translate_failed: { en: 'Translation failed: ', fr: 'Échec de la traduction : ' },
+        lang_labels: {
+          auto: { en: 'Detect language', fr: 'Détecter la langue' },
+          en: { en: 'English', fr: 'Anglais' },
+          es: { en: 'Spanish', fr: 'Espagnol' },
+          fr: { en: 'French', fr: 'Français' },
+          de: { en: 'German', fr: 'Allemand' },
+          it: { en: 'Italian', fr: 'Italien' },
+          pt: { en: 'Portuguese', fr: 'Portugais' },
+          nl: { en: 'Dutch', fr: 'Néerlandais' },
+          ja: { en: 'Japanese', fr: 'Japonais' },
+          zh: { en: 'Chinese', fr: 'Chinois' },
+          ru: { en: 'Russian', fr: 'Russe' }
+        }
+      };
+
+      function setLanguage(lang) {
+        currentLang = lang;
+        document.title = translations.title[lang];
+        document.querySelector('h1').textContent = translations.h1[lang];
+        document.getElementById('intro-p').textContent = translations.intro_p[lang];
+        document.getElementById('features-list').innerHTML = translations.features_list[lang];
+        document.getElementById('facts-list').innerHTML = translations.facts_list[lang];
+        document.getElementById('pricing-list').innerHTML = translations.pricing_list[lang];
+        document.getElementById('popular-products').innerHTML = translations.popular_products[lang];
+        document.getElementById('facts-toggle').textContent = translations.facts_toggle_show[lang];
+        document.getElementById('pricing-toggle').textContent = translations.pricing_toggle_show[lang];
+        document.getElementById('help-button').textContent = translations.help_button[lang];
+        document.querySelector('h2').textContent = translations.popular_heading[lang];
+        document.getElementById('accessibility-heading').textContent = translations.access_heading[lang];
+        document.querySelector('.accessibility p').textContent = translations.access_intro[lang];
+        document.getElementById('tts-button').textContent = translations.tts_button[lang];
+        document.getElementById('access-status').textContent = translations.access_status_ready[lang];
+        document.getElementById('transcript').placeholder = translations.transcript_placeholder[lang];
+        document.getElementById('translate-input').placeholder = translations.translate_input_placeholder[lang];
+        document.getElementById('translate-output').placeholder = translations.translate_output_placeholder[lang];
+        document.getElementById('translate-btn').textContent = translations.translate_btn[lang];
+        document.getElementById('translate-status').textContent = '';
+        const langLabelMap = translations.lang_labels;
+        const sourceSelect = document.getElementById('source-lang');
+        const targetSelect = document.getElementById('target-lang');
+        for (let opt of sourceSelect.options) { if (langLabelMap[opt.value]) opt.text = langLabelMap[opt.value][lang]; }
+        for (let opt of targetSelect.options) { if (langLabelMap[opt.value]) opt.text = langLabelMap[opt.value][lang]; }
+        document.getElementById('lang-toggle').textContent = lang === 'en' ? 'Français' : 'English';
+      }
+
+      // wire up toggles and buttons
+      const factsToggle = document.getElementById('facts-toggle');
+      const factsList = document.getElementById('facts-list');
+      factsToggle.addEventListener('click', () => {
+        factsList.classList.toggle('show');
+        factsToggle.textContent = factsList.classList.contains('show') ? translations.facts_toggle_hide[currentLang] : translations.facts_toggle_show[currentLang];
       });
-      const pricingToggle = document.getElementById("pricing-toggle");
-      const pricingList = document.getElementById("pricing-list");
-      pricingToggle.addEventListener("click", () => {
-        pricingList.classList.toggle("show");
-        pricingToggle.textContent = pricingList.classList.contains("show")
-          ? "Hide pricing"
-          : "Show pricing for Alexa products";
+      const pricingToggle = document.getElementById('pricing-toggle');
+      const pricingList = document.getElementById('pricing-list');
+      pricingToggle.addEventListener('click', () => {
+        pricingList.classList.toggle('show');
+        pricingToggle.textContent = pricingList.classList.contains('show') ? translations.pricing_toggle_hide[currentLang] : translations.pricing_toggle_show[currentLang];
       });
-      const helpButton = document.getElementById("help-button");
-      helpButton.addEventListener("click", () => {
-        const subject = encodeURIComponent("Help with Alexa product");
-        const body = encodeURIComponent("Hi,%0A%0AI need help with my Alexa product. Please advise.%0A%0AThanks,");
+      const helpButton = document.getElementById('help-button');
+      helpButton.addEventListener('click', () => {
+        const subject = encodeURIComponent(currentLang === 'fr' ? 'Besoin d\'aide avec un produit Alexa' : 'Help with Alexa product');
+        const bodyText = currentLang === 'fr' ? 'Bonjour,%0A%0AJai besoin daide avec mon produit Alexa. Merci.' : 'Hi,%0A%0AI need help with my Alexa product. Please advise.%0A%0AThanks,';
+        const body = encodeURIComponent(bodyText);
         window.location.href = `mailto:support@example.com?subject=${subject}&body=${body}`;
       });
-      // Accessibility: Text-to-speech (TTS)
+
+      // TTS
       const transcriptEl = document.getElementById('transcript');
       const ttsButton = document.getElementById('tts-button');
       const accessStatus = document.getElementById('access-status');
       ttsButton.addEventListener('click', () => {
         const text = transcriptEl.value.trim();
-        if (!text) { accessStatus.textContent = 'No transcript to read.'; return; }
+        if (!text) { accessStatus.textContent = translations.access_status_no_text[currentLang]; return; }
         const utter = new SpeechSynthesisUtterance(text);
-        accessStatus.textContent = 'Reading...';
-        utter.onend = () => { accessStatus.textContent = 'Done.'; };
+        accessStatus.textContent = translations.access_status_reading[currentLang];
+        utter.onend = () => { accessStatus.textContent = translations.access_status_done[currentLang]; };
         window.speechSynthesis.speak(utter);
       });
-      // Translator: use LibreTranslate public instance with graceful error handling
+
+      // Translator (keeps existing LibreTranslate behavior, but uses translated status messages)
       const translateBtn = document.getElementById('translate-btn');
       const translateInput = document.getElementById('translate-input');
       const translateOutput = document.getElementById('translate-output');
@@ -260,27 +353,30 @@
       const translateStatus = document.getElementById('translate-status');
       translateBtn.addEventListener('click', async () => {
         const text = translateInput.value.trim();
-        if (!text) { translateStatus.textContent = 'Enter text to translate.'; return; }
-        translateStatus.textContent = 'Translating...';
+        if (!text) { translateStatus.textContent = translations.translate_enter_text[currentLang]; return; }
+        translateStatus.textContent = translations.translate_translating[currentLang];
         try {
           const res = await fetch('https://libretranslate.de/translate', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              q: text,
-              source: sourceLang.value === 'auto' ? 'auto' : sourceLang.value,
-              target: targetLang.value,
-              format: 'text'
-            })
+            body: JSON.stringify({ q: text, source: sourceLang.value === 'auto' ? 'auto' : sourceLang.value, target: targetLang.value, format: 'text' })
           });
           if (!res.ok) throw new Error(res.status + ' ' + res.statusText);
           const data = await res.json();
           translateOutput.value = data.translatedText || '';
-          translateStatus.textContent = 'Done.';
+          translateStatus.textContent = translations.translate_done[currentLang];
         } catch (err) {
-          translateStatus.textContent = 'Translation failed: ' + err.message + '. Try again later.';
+          translateStatus.textContent = translations.translate_failed[currentLang] + err.message + '. Try again later.';
         }
       });
+
+      // language toggle
+      document.getElementById('lang-toggle').addEventListener('click', () => {
+        setLanguage(currentLang === 'en' ? 'fr' : 'en');
+      });
+
+      // initialize
+      setLanguage('en');
     </script>
   </body>
 </html>
