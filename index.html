@@ -113,6 +113,7 @@
         <li>Echo Studio — $199.99</li>
         <li>Echo Pop — $39.99</li>
       </ul>
+      <button id="help-button" type="button">Contact Customer Help</button>
       <p id="build-time"></p>
     </main>
     <script>
@@ -134,6 +135,12 @@
         pricingToggle.textContent = pricingList.classList.contains("show")
           ? "Hide pricing"
           : "Show pricing for Alexa products";
+      });
+      const helpButton = document.getElementById("help-button");
+      helpButton.addEventListener("click", () => {
+        const subject = encodeURIComponent("Help with Alexa product");
+        const body = encodeURIComponent("Hi,%0A%0AI need help with my Alexa product. Please advise.%0A%0AThanks,");
+        window.location.href = `mailto:support@example.com?subject=${subject}&body=${body}`;
       });
     </script>
   </body>
