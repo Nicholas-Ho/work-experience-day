@@ -262,7 +262,11 @@
           sttStatus.textContent = 'Stopped.';
         };
         recognition.onerror = (e) => {
-          sttStatus.textContent = 'Error: ' + (e.error || 'unknown');
+          const err = e.error || 'unknown';
+          if (err === 'not-allowed' || err === 'service-not-allowed') sttStatus.textContent = 'Microphone permission denied.';
+          else if (err === 'no-speech') sttStatus.textContent = 'No speech was detected. Try speaking louder or check your microphone.';
+          else if (err === 'audio-capture') sttStatus.textContent = 'No microphone was found. Check your device settings.';
+          else sttStatus.textContent = 'Error: ' + err;
         };
         recognition.onresult = (event) => {
           let interim = '';
@@ -276,12 +280,24 @@
           }
           transcriptEl.value = final + interim;
         };
-        sttToggle.addEventListener('click', () => {
+        sttToggle.addEventListener('click', async () => {
           try {
-            if (recognizing) recognition.stop();
-            else recognition.start();
+            if (recognizing) {
+              recognition.stop();
+              return;
+            }
+            // Request microphone permission first to avoid immediate stop in some browsers
+            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+              try {
+                await navigator.mediaDevices.getUserMedia({ audio: true });
+              } catch (permErr) {
+                sttStatus.textContent = 'Microphone access denied.';
+                return;
+              }
+            }
+            recognition.start();
           } catch (err) {
-            sttStatus.textContent = 'Speech recognition error: ' + err.message;
+            sttStatus.textContent = 'Speech recognition error: ' + (err.message || err);
           }
         });
       } else {
