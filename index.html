@@ -162,10 +162,10 @@
       }
       .device-card:hover {
         transform: translateY(-4px);
-        box-shadow: 0 16px 36px rgba(255, 153, 0, 0.16);
+        box-shadow: 0 0 0 1px rgba(255, 153, 0, 0.35), 0 0 24px rgba(255, 153, 0, 0.28);
       }
       body[data-theme="dark"] .device-card:hover {
-        box-shadow: 0 16px 38px rgba(255, 179, 71, 0.24);
+        box-shadow: 0 0 0 1px rgba(255, 179, 71, 0.3), 0 0 26px rgba(255, 179, 71, 0.24);
       }
       .device-card--dot {
         background: linear-gradient(135deg, #fdf4e7, var(--surface));
@@ -244,6 +244,19 @@
         color: #fff;
         background: linear-gradient(135deg, var(--accent), var(--accent-strong));
       }
+      .cursor-trail {
+        position: fixed;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        pointer-events: none;
+        background: radial-gradient(circle, rgba(34, 211, 238, 0.8) 0%, rgba(14, 165, 233, 0.35) 40%, rgba(14, 165, 233, 0) 70%);
+        transform: translate(-50%, -50%);
+        mix-blend-mode: screen;
+        z-index: 9999;
+        opacity: 0.8;
+        transition: opacity 0.2s ease;
+      }
       .sr-only {
         position: absolute;
         width: 1px;
@@ -266,6 +279,7 @@
     </style>
   </head>
   <body>
+    <div class="cursor-trail" id="cursor-trail" aria-hidden="true"></div>
     <main class="dashboard">
       <header class="topbar">
         <a class="brand" href="https://www.amazon.com/alexa" target="_blank" rel="noopener noreferrer">
@@ -379,6 +393,26 @@
       const languageSelect = document.getElementById("language-select");
       const themeToggle = document.getElementById("theme-toggle");
       const translatableElements = document.querySelectorAll("[data-i18n]");
+      const cursorTrail = document.getElementById("cursor-trail");
+      let mouseX = window.innerWidth / 2;
+      let mouseY = window.innerHeight / 2;
+
+      document.addEventListener("mousemove", (event) => {
+        mouseX = event.clientX;
+        mouseY = event.clientY;
+        cursorTrail.style.opacity = "0.8";
+      });
+
+      document.addEventListener("mouseleave", () => {
+        cursorTrail.style.opacity = "0";
+      });
+
+      function animateTrail() {
+        cursorTrail.style.left = `${mouseX}px`;
+        cursorTrail.style.top = `${mouseY}px`;
+        requestAnimationFrame(animateTrail);
+      }
+      animateTrail();
       const track = document.getElementById("device-track");
       const prevBtn = document.getElementById("prev-btn");
       const nextBtn = document.getElementById("next-btn");
