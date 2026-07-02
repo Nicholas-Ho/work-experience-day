@@ -6,99 +6,139 @@
     <title>Alexa Marketing Playground</title>
     <style>
       :root {
-        font-family: Arial, Helvetica, sans-serif;
+        font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+        color: #17324d;
       }
       body {
         margin: 0;
         min-height: 100vh;
-        display: grid;
-        place-items: center;
-        background: linear-gradient(120deg, #232f3e, #00a8e1);
-        color: #fff;
-      }
-      .alexa-corner {
-        position: fixed;
-        top: 12px;
-        right: 12px;
-        width: min(22vw, 150px);
-        height: auto;
-        filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.25));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+        background: linear-gradient(135deg, #f5fbff 0%, #dcefff 45%, #eef8f2 100%);
       }
       .card {
-        text-align: center;
-        background: rgba(0, 0, 0, 0.35);
-        border: 1px solid rgba(255, 255, 255, 0.15);
-        border-radius: 16px;
+        display: flex;
+        width: min(100%, 960px);
+        background: #ffffff;
+        border-radius: 24px;
+        overflow: hidden;
+        border: 1px solid #e2edf7;
+        box-shadow: 0 20px 45px rgba(23, 50, 77, 0.16);
+      }
+      .panel-left {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #f7fbff, #dbeeff);
         padding: 2rem;
-        width: min(90vw, 700px);
-        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+      }
+      .panel-left img {
+        width: min(100%, 320px);
+        max-width: 100%;
+        height: auto;
+        filter: drop-shadow(0 12px 24px rgba(23, 50, 77, 0.18));
+      }
+      .panel-right {
+        flex: 1;
+        padding: 2.5rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+      .eyebrow {
+        margin: 0 0 0.5rem;
+        text-transform: uppercase;
+        letter-spacing: 0.24em;
+        font-size: 0.8rem;
+        font-weight: 700;
+        color: #4f8fc4;
       }
       h1 {
-        margin-top: 0;
-        font-size: clamp(1.8rem, 4vw, 3rem);
+        margin: 0 0 0.8rem;
+        font-size: clamp(1.8rem, 3vw, 2.8rem);
+        color: #0f3d5c;
       }
       p {
-        margin-bottom: 0;
-        opacity: 0.9;
+        margin: 0 0 0.8rem;
+        line-height: 1.6;
+        color: #4a5d70;
       }
       ul {
-        text-align: left;
-        margin: 1rem auto 0;
-        width: fit-content;
+        margin: 0.5rem 0 1rem 1.2rem;
+        padding: 0;
+        color: #4a5d70;
+      }
+      li + li {
+        margin-top: 0.35rem;
       }
       button {
-        margin-top: 1rem;
+        margin-top: 0.5rem;
         border: 0;
-        border-radius: 10px;
-        padding: 0.7rem 1rem;
+        border-radius: 999px;
+        padding: 0.8rem 1.2rem;
         font-size: 1rem;
         font-weight: 700;
-        color: #232f3e;
-        background: #ffcc4d;
+        color: #ffffff;
+        background: linear-gradient(135deg, #0f8fcb, #2f7fbf);
         cursor: pointer;
+        box-shadow: 0 8px 18px rgba(47, 127, 191, 0.2);
       }
       button:hover {
         filter: brightness(1.05);
       }
       #facts-list {
         display: none;
-        margin-top: 1rem;
+        margin-top: 0.6rem;
       }
       #facts-list.show {
         display: block;
       }
-      @media (max-width: 640px) {
-        .alexa-corner {
-          width: 84px;
-          top: 8px;
-          right: 8px;
+      @media (max-width: 780px) {
+        .card {
+          flex-direction: column;
+        }
+        .panel-left {
+          padding: 1.5rem 1.5rem 0;
+        }
+        .panel-right {
+          padding: 1.5rem;
         }
       }
     </style>
   </head>
   <body>
-    <img
-      class="alexa-corner"
-      src="images/Alexa-Echo-Transparent-Image.png"
-      alt="Amazon Alexa Echo device"
-    />
     <main class="card">
-      <h1>Alexa Marketing Playground</h1>
-      <p>Build a simple marketing page for Alexa with your team.</p>
-      <ul>
-        <li>Change colors, fonts, and layout</li>
-        <li>Add a headline and call-to-action</li>
-        <li>Make it fun and memorable</li>
-      </ul>
-      <button id="facts-toggle" type="button">Show 5 fun facts about Alexa</button>
-      <ul id="facts-list">
-        <li>Alexa can set timers, alarms, and reminders with simple voice commands.</li>
-        <li>It can control many smart-home devices like lights, plugs, and thermostats.</li>
-        <li>You can create custom voice commands with Alexa Routines.</li>
-        <li>Alexa can play music, podcasts, audiobooks, and radio stations.</li>
-        <li>Developers can build voice apps for Alexa called Skills.</li>
-      </ul>
-      <p id="build-time"></p>
+      <section class="panel-left">
+        <img
+          src="images/Alexa-Echo-Transparent-Image.png"
+          alt="Amazon Alexa Echo device"
+        />
+      </section>
+      <section class="panel-right">
+        <p class="eyebrow">Smart home companion</p>
+        <h1>Meet Alexa</h1>
+        <p>
+          Alexa is a friendly voice assistant that helps you stay organized, enjoy music,
+          and control your home with simple commands.
+        </p>
+        <ul>
+          <li>Set reminders, alarms, and routines in seconds</li>
+          <li>Play your favorite songs and podcasts hands-free</li>
+          <li>Control lights, plugs, and other smart devices</li>
+        </ul>
+        <button id="facts-toggle" type="button">Show 5 fun facts about Alexa</button>
+        <ul id="facts-list">
+          <li>Alexa can set timers, alarms, and reminders with simple voice commands.</li>
+          <li>It can control many smart-home devices like lights, plugs, and thermostats.</li>
+          <li>You can create custom voice commands with Alexa Routines.</li>
+          <li>Alexa can play music, podcasts, audiobooks, and radio stations.</li>
+          <li>Developers can build voice apps for Alexa called Skills.</li>
+        </ul>
+        <p id="build-time"></p>
+      </section>
     </main>
     <script>
       const now = new Date();
