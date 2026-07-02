@@ -137,28 +137,53 @@
         line-height: 1.6;
         color: var(--muted);
       }
-      .device-stack {
-        display: grid;
-        gap: 14px;
-      }
-      .device-card {
-        display: grid;
-        grid-template-columns: 180px 1fr;
-        gap: 16px;
-        align-items: center;
-        padding: 16px;
+      .device-carousel {
+        position: relative;
+        overflow: hidden;
         border-radius: 18px;
         border: 1px solid var(--border);
         background: var(--surface);
       }
+      .device-track {
+        display: flex;
+        transition: transform 0.3s ease;
+      }
+      .device-card {
+        min-width: 100%;
+        display: grid;
+        grid-template-columns: 180px 1fr;
+        gap: 16px;
+        align-items: center;
+        padding: 20px;
+        min-height: 285px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+      }
+      .device-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 16px 36px rgba(255, 153, 0, 0.16);
+      }
+      body[data-theme="dark"] .device-card:hover {
+        box-shadow: 0 16px 38px rgba(255, 179, 71, 0.24);
+      }
       .device-card--dot {
-        background: linear-gradient(135deg, #fdf4e7, #fff);
+        background: linear-gradient(135deg, #fdf4e7, var(--surface));
+      }
+      body[data-theme="dark"] .device-card--dot {
+        background: linear-gradient(135deg, #522d00, #1b1720);
       }
       .device-card--show {
-        background: linear-gradient(135deg, #eef8ff, #fff);
+        background: linear-gradient(135deg, #eef8ff, var(--surface));
+      }
+      body[data-theme="dark"] .device-card--show {
+        background: linear-gradient(135deg, #0f2b43, #141c28);
       }
       .device-card--studio {
-        background: linear-gradient(135deg, #f4edff, #fff);
+        background: linear-gradient(135deg, #f4edff, var(--surface));
+      }
+      body[data-theme="dark"] .device-card--studio {
+        background: linear-gradient(135deg, #2d1c4b, #161423);
       }
       .device-visual {
         display: flex;
@@ -177,6 +202,36 @@
       }
       .device-body h2 {
         font-size: 1.2rem;
+      }
+      .carousel-controls {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 12px;
+      }
+      .carousel-btn {
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        background: var(--surface-2);
+        color: var(--text);
+        padding: 0.55rem 0.8rem;
+        cursor: pointer;
+      }
+      .carousel-dots {
+        display: flex;
+        gap: 8px;
+      }
+      .carousel-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 999px;
+        background: var(--border);
+        border: 0;
+        padding: 0;
+        cursor: pointer;
+      }
+      .carousel-dot.active {
+        background: var(--accent-strong);
       }
       .primary-btn {
         display: inline-block;
@@ -241,39 +296,47 @@
           <p data-i18n="intro">Browse three smart speaker experiences designed for different rooms and routines.</p>
         </div>
 
-        <div class="device-stack">
-          <article class="device-card device-card--dot">
-            <div class="device-visual">
-              <img src="images/Alexa-Echo-Transparent-Image.png" alt="Echo Dot" />
-            </div>
-            <div class="device-body">
-              <h2>Echo Dot</h2>
-              <p data-i18n="dot-copy">A compact smart speaker for bedrooms, kitchens, and quick voice commands.</p>
-              <a class="primary-btn" href="https://www.amazon.com/alexa" target="_blank" rel="noopener noreferrer" data-i18n="dot-cta">Explore Echo Dot</a>
-            </div>
-          </article>
+        <div class="device-carousel">
+          <div class="device-track" id="device-track">
+            <article class="device-card device-card--dot">
+              <div class="device-visual">
+                <img src="images/Alexa-Echo-Transparent-Image.png" alt="Echo Dot" />
+              </div>
+              <div class="device-body">
+                <h2>Echo Dot</h2>
+                <p data-i18n="dot-copy">A compact smart speaker for bedrooms, kitchens, and quick voice commands.</p>
+                <a class="primary-btn" href="https://www.amazon.com/alexa" target="_blank" rel="noopener noreferrer" data-i18n="dot-cta">Explore Echo Dot</a>
+              </div>
+            </article>
 
-          <article class="device-card device-card--show">
-            <div class="device-visual">
-              <img src="images/Alexa-Echo-Transparent-Image.png" alt="Echo Show" />
-            </div>
-            <div class="device-body">
-              <h2>Echo Show</h2>
-              <p data-i18n="show-copy">A screen-based Alexa experience for video calls, recipes, and visuals.</p>
-              <a class="primary-btn" href="https://www.amazon.com/alexa" target="_blank" rel="noopener noreferrer" data-i18n="show-cta">Explore Echo Show</a>
-            </div>
-          </article>
+            <article class="device-card device-card--show">
+              <div class="device-visual">
+                <img src="images/Alexa-Echo-Transparent-Image.png" alt="Echo Show" />
+              </div>
+              <div class="device-body">
+                <h2>Echo Show</h2>
+                <p data-i18n="show-copy">A screen-based Alexa experience for video calls, recipes, and visuals.</p>
+                <a class="primary-btn" href="https://www.amazon.com/alexa" target="_blank" rel="noopener noreferrer" data-i18n="show-cta">Explore Echo Show</a>
+              </div>
+            </article>
 
-          <article class="device-card device-card--studio">
-            <div class="device-visual">
-              <img src="images/Alexa-Echo-Transparent-Image.png" alt="Echo Studio" />
-            </div>
-            <div class="device-body">
-              <h2>Echo Studio</h2>
-              <p data-i18n="studio-copy">A premium Alexa speaker with rich sound for music lovers and larger rooms.</p>
-              <a class="primary-btn" href="https://www.amazon.com/alexa" target="_blank" rel="noopener noreferrer" data-i18n="studio-cta">Explore Echo Studio</a>
-            </div>
-          </article>
+            <article class="device-card device-card--studio">
+              <div class="device-visual">
+                <img src="images/Alexa-Echo-Transparent-Image.png" alt="Echo Studio" />
+              </div>
+              <div class="device-body">
+                <h2>Echo Studio</h2>
+                <p data-i18n="studio-copy">A premium Alexa speaker with rich sound for music lovers and larger rooms.</p>
+                <a class="primary-btn" href="https://www.amazon.com/alexa" target="_blank" rel="noopener noreferrer" data-i18n="studio-cta">Explore Echo Studio</a>
+              </div>
+            </article>
+          </div>
+        </div>
+
+        <div class="carousel-controls">
+          <button class="carousel-btn" id="prev-btn" type="button" aria-label="Previous device">← Prev</button>
+          <div class="carousel-dots" id="carousel-dots"></div>
+          <button class="carousel-btn" id="next-btn" type="button" aria-label="Next device">Next →</button>
         </div>
 
         <p id="build-time"></p>
@@ -316,6 +379,35 @@
       const languageSelect = document.getElementById("language-select");
       const themeToggle = document.getElementById("theme-toggle");
       const translatableElements = document.querySelectorAll("[data-i18n]");
+      const track = document.getElementById("device-track");
+      const prevBtn = document.getElementById("prev-btn");
+      const nextBtn = document.getElementById("next-btn");
+      const dotsContainer = document.getElementById("carousel-dots");
+      const slides = Array.from(track.children);
+      let currentIndex = 0;
+
+      slides.forEach((_, index) => {
+        const dot = document.createElement("button");
+        dot.className = "carousel-dot";
+        dot.type = "button";
+        dot.setAttribute("aria-label", `Go to slide ${index + 1}`);
+        dot.addEventListener("click", () => showSlide(index));
+        dotsContainer.appendChild(dot);
+      });
+
+      const dots = Array.from(dotsContainer.children);
+
+      function showSlide(index) {
+        currentIndex = (index + slides.length) % slides.length;
+        track.style.transform = `translateX(-${currentIndex * 100}%)`;
+        dots.forEach((dot, dotIndex) => {
+          dot.classList.toggle("active", dotIndex === currentIndex);
+        });
+      }
+
+      prevBtn.addEventListener("click", () => showSlide(currentIndex - 1));
+      nextBtn.addEventListener("click", () => showSlide(currentIndex + 1));
+      showSlide(0);
 
       function updateLanguage(lang) {
         const dictionary = translations[lang] || translations.en;
