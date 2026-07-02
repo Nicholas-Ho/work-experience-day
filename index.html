@@ -246,16 +246,19 @@
       }
       .cursor-trail {
         position: fixed;
-        width: 24px;
-        height: 24px;
-        border-radius: 50%;
         pointer-events: none;
-        background: radial-gradient(circle, rgba(34, 211, 238, 0.8) 0%, rgba(14, 165, 233, 0.35) 40%, rgba(14, 165, 233, 0) 70%);
-        transform: translate(-50%, -50%);
-        mix-blend-mode: screen;
         z-index: 9999;
-        opacity: 0.8;
+        opacity: 0;
         transition: opacity 0.2s ease;
+      }
+      .cursor-trail span {
+        position: absolute;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(34, 211, 238, 0.95) 0%, rgba(14, 165, 233, 0.4) 40%, rgba(14, 165, 233, 0) 70%);
+        transform: translate(-50%, -50%);
+        filter: blur(1px);
       }
       .sr-only {
         position: absolute;
@@ -396,11 +399,18 @@
       const cursorTrail = document.getElementById("cursor-trail");
       let mouseX = window.innerWidth / 2;
       let mouseY = window.innerHeight / 2;
+      const trailPoints = [];
+
+      for (let i = 0; i < 10; i += 1) {
+        const point = document.createElement("span");
+        cursorTrail.appendChild(point);
+        trailPoints.push({ x: mouseX, y: mouseY, el: point });
+      }
 
       document.addEventListener("mousemove", (event) => {
         mouseX = event.clientX;
         mouseY = event.clientY;
-        cursorTrail.style.opacity = "0.8";
+        cursorTrail.style.opacity = "0.9";
       });
 
       document.addEventListener("mouseleave", () => {
@@ -408,8 +418,23 @@
       });
 
       function animateTrail() {
-        cursorTrail.style.left = `${mouseX}px`;
-        cursorTrail.style.top = `${mouseY}px`;
+        trailPoints[0].x = mouseX;
+        trailPoints[0].y = mouseY;
+
+        for (let i = 1; i < trailPoints.length; i += 1) {
+          const prev = trailPoints[i - 1];
+          const current = trailPoints[i];
+          current.x += (prev.x - current.x) * 0.25;
+          current.y += (prev.y - current.y) * 0.25;
+        }
+
+        trailPoints.forEach((point, index) => {
+          point.el.style.left = `${point.x}px`;
+          point.el.style.top = `${point.y}px`;
+          point.el.style.opacity = `${Math.max(0, 1 - index / trailPoints.length)}`;
+          point.el.style.transform = `translate(-50%, -50%) scale(${1 - index / (trailPoints.length * 1.4)})`;
+        });
+
         requestAnimationFrame(animateTrail);
       }
       animateTrail();
