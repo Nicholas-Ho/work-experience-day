@@ -49,11 +49,16 @@
       }
       .dashboard {
         width: min(100%, 1080px);
+        height: min(100vh - 48px, 920px);
+        max-height: 100%;
+        display: flex;
+        flex-direction: column;
         background: var(--surface);
         border: 1px solid var(--border);
         border-radius: 24px;
         padding: 24px;
         box-shadow: var(--shadow);
+        overflow: hidden;
       }
       .topbar {
         display: flex;
@@ -100,15 +105,17 @@
       .theme-toggle {
         cursor: pointer;
       }
-      .hero {
-        display: grid;
-        grid-template-columns: 1.2fr 0.8fr;
-        gap: 20px;
-        align-items: center;
+      .content-shell {
+        flex: 1;
+        overflow-y: auto;
+        padding-right: 6px;
+      }
+      .intro-block {
+        margin-bottom: 16px;
+        padding: 18px 20px;
+        border-radius: 18px;
         background: linear-gradient(135deg, var(--surface-2), transparent);
         border: 1px solid var(--border);
-        border-radius: 20px;
-        padding: 24px;
       }
       .eyebrow {
         margin: 0 0 0.5rem;
@@ -118,8 +125,11 @@
         font-weight: 700;
         color: var(--accent-strong);
       }
-      h1 {
+      h1,
+      h2 {
         margin: 0 0 0.8rem;
+      }
+      h1 {
         font-size: clamp(1.8rem, 3vw, 2.8rem);
       }
       p {
@@ -127,87 +137,57 @@
         line-height: 1.6;
         color: var(--muted);
       }
-      .hero-actions {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 12px;
-        margin-top: 1rem;
+      .device-stack {
+        display: grid;
+        gap: 14px;
       }
-      .primary-btn,
-      .secondary-btn {
-        border: 0;
-        border-radius: 999px;
-        padding: 0.8rem 1.1rem;
-        font-size: 1rem;
-        font-weight: 700;
-        cursor: pointer;
-      }
-      .primary-btn {
-        color: #fff;
-        background: linear-gradient(135deg, var(--accent), var(--accent-strong));
-      }
-      .secondary-btn {
-        color: var(--text);
-        background: var(--surface);
+      .device-card {
+        display: grid;
+        grid-template-columns: 180px 1fr;
+        gap: 16px;
+        align-items: center;
+        padding: 16px;
+        border-radius: 18px;
         border: 1px solid var(--border);
+        background: var(--surface);
       }
-      .hero-visual {
-        position: relative;
+      .device-card--dot {
+        background: linear-gradient(135deg, #fdf4e7, #fff);
+      }
+      .device-card--show {
+        background: linear-gradient(135deg, #eef8ff, #fff);
+      }
+      .device-card--studio {
+        background: linear-gradient(135deg, #f4edff, #fff);
+      }
+      .device-visual {
         display: flex;
         align-items: center;
         justify-content: center;
-        min-height: 280px;
+        min-height: 150px;
+        border-radius: 16px;
+        padding: 12px;
+        background: rgba(255, 255, 255, 0.7);
       }
-      .hero-visual img {
-        width: min(100%, 320px);
+      .device-visual img {
+        width: 100%;
+        max-width: 140px;
         height: auto;
-        filter: drop-shadow(0 18px 28px rgba(23, 50, 77, 0.16));
+        filter: drop-shadow(0 12px 20px rgba(23, 50, 77, 0.16));
       }
-      .mini-card {
-        position: absolute;
-        right: 0;
-        bottom: 0;
-        padding: 0.8rem 1rem;
-        border-radius: 14px;
-        background: var(--surface);
-        border: 1px solid var(--border);
-        box-shadow: var(--shadow);
+      .device-body h2 {
+        font-size: 1.2rem;
+      }
+      .primary-btn {
+        display: inline-block;
+        border: 0;
+        border-radius: 999px;
+        padding: 0.75rem 1rem;
         font-size: 0.95rem;
-      }
-      .stats-grid {
-        display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 14px;
-        margin-top: 16px;
-      }
-      .stat-card {
-        background: var(--surface-2);
-        border: 1px solid var(--border);
-        border-radius: 16px;
-        padding: 16px;
-      }
-      .stat-card h3 {
-        margin: 0 0 0.35rem;
-        font-size: 1rem;
-      }
-      .stat-card p {
-        margin: 0;
-      }
-      .facts {
-        margin-top: 16px;
-        padding: 16px 18px;
-        border-radius: 16px;
-        background: var(--surface-2);
-        border: 1px solid var(--border);
-      }
-      #facts-list {
-        display: none;
-        margin: 0.7rem 0 0 1.1rem;
-        padding: 0;
-        color: var(--muted);
-      }
-      #facts-list.show {
-        display: block;
+        font-weight: 700;
+        cursor: pointer;
+        color: #fff;
+        background: linear-gradient(135deg, var(--accent), var(--accent-strong));
       }
       .sr-only {
         position: absolute;
@@ -221,11 +201,11 @@
         border: 0;
       }
       @media (max-width: 780px) {
-        .hero {
+        .device-card {
           grid-template-columns: 1fr;
         }
-        .stats-grid {
-          grid-template-columns: 1fr;
+        .device-visual {
+          min-height: 120px;
         }
       }
     </style>
@@ -254,49 +234,48 @@
         </div>
       </header>
 
-      <section class="hero">
-        <div>
-          <p class="eyebrow" data-i18n="eyebrow">Smart home companion</p>
-          <h1 data-i18n="title">Meet Alexa</h1>
-          <p data-i18n="intro">
-            Alexa is a friendly voice assistant that helps you stay organized, enjoy music,
-            and control your home with simple commands.
-          </p>
-          <div class="hero-actions">
-            <a class="primary-btn" href="https://www.amazon.com/alexa" target="_blank" rel="noopener noreferrer" data-i18n="cta">Explore Alexa</a>
-            <button class="secondary-btn" id="facts-toggle" type="button" data-i18n="toggle-show">Show 5 fun facts about Alexa</button>
-          </div>
+      <section class="content-shell">
+        <div class="intro-block">
+          <p class="eyebrow" data-i18n="eyebrow">Alexa family</p>
+          <h1 data-i18n="title">Choose your Alexa</h1>
+          <p data-i18n="intro">Browse three smart speaker experiences designed for different rooms and routines.</p>
         </div>
-        <div class="hero-visual">
-          <img src="images/Alexa-Echo-Transparent-Image.png" alt="Amazon Alexa Echo device" />
-          <div class="mini-card" data-i18n="mini-card">Always ready to help</div>
+
+        <div class="device-stack">
+          <article class="device-card device-card--dot">
+            <div class="device-visual">
+              <img src="images/Alexa-Echo-Transparent-Image.png" alt="Echo Dot" />
+            </div>
+            <div class="device-body">
+              <h2>Echo Dot</h2>
+              <p data-i18n="dot-copy">A compact smart speaker for bedrooms, kitchens, and quick voice commands.</p>
+              <a class="primary-btn" href="https://www.amazon.com/alexa" target="_blank" rel="noopener noreferrer" data-i18n="dot-cta">Explore Echo Dot</a>
+            </div>
+          </article>
+
+          <article class="device-card device-card--show">
+            <div class="device-visual">
+              <img src="images/Alexa-Echo-Transparent-Image.png" alt="Echo Show" />
+            </div>
+            <div class="device-body">
+              <h2>Echo Show</h2>
+              <p data-i18n="show-copy">A screen-based Alexa experience for video calls, recipes, and visuals.</p>
+              <a class="primary-btn" href="https://www.amazon.com/alexa" target="_blank" rel="noopener noreferrer" data-i18n="show-cta">Explore Echo Show</a>
+            </div>
+          </article>
+
+          <article class="device-card device-card--studio">
+            <div class="device-visual">
+              <img src="images/Alexa-Echo-Transparent-Image.png" alt="Echo Studio" />
+            </div>
+            <div class="device-body">
+              <h2>Echo Studio</h2>
+              <p data-i18n="studio-copy">A premium Alexa speaker with rich sound for music lovers and larger rooms.</p>
+              <a class="primary-btn" href="https://www.amazon.com/alexa" target="_blank" rel="noopener noreferrer" data-i18n="studio-cta">Explore Echo Studio</a>
+            </div>
+          </article>
         </div>
-      </section>
 
-      <section class="stats-grid">
-        <article class="stat-card">
-          <h3 data-i18n="card-1-title">Voice control</h3>
-          <p data-i18n="card-1-copy">Hands-free help for everyday tasks.</p>
-        </article>
-        <article class="stat-card">
-          <h3 data-i18n="card-2-title">Music</h3>
-          <p data-i18n="card-2-copy">Play your favorite songs and podcasts.</p>
-        </article>
-        <article class="stat-card">
-          <h3 data-i18n="card-3-title">Smart home</h3>
-          <p data-i18n="card-3-copy">Control lights and devices from one place.</p>
-        </article>
-      </section>
-
-      <section class="facts">
-        <p data-i18n="facts-label">Quick facts</p>
-        <ul id="facts-list">
-          <li data-i18n="fact-1">Alexa can set timers, alarms, and reminders with simple voice commands.</li>
-          <li data-i18n="fact-2">It can control many smart-home devices like lights, plugs, and thermostats.</li>
-          <li data-i18n="fact-3">You can create custom voice commands with Alexa Routines.</li>
-          <li data-i18n="fact-4">Alexa can play music, podcasts, audiobooks, and radio stations.</li>
-          <li data-i18n="fact-5">Developers can build voice apps for Alexa called Skills.</li>
-        </ul>
         <p id="build-time"></p>
       </section>
     </main>
@@ -307,57 +286,33 @@
 
       const translations = {
         en: {
-          eyebrow: "Smart home companion",
-          title: "Meet Alexa",
-          intro:
-            "Alexa is a friendly voice assistant that helps you stay organized, enjoy music, and control your home with simple commands.",
-          cta: "Explore Alexa",
-          "toggle-show": "Show 5 fun facts about Alexa",
-          "toggle-hide": "Hide fun facts",
-          "mini-card": "Always ready to help",
-          "card-1-title": "Voice control",
-          "card-1-copy": "Hands-free help for everyday tasks.",
-          "card-2-title": "Music",
-          "card-2-copy": "Play your favorite songs and podcasts.",
-          "card-3-title": "Smart home",
-          "card-3-copy": "Control lights and devices from one place.",
-          "facts-label": "Quick facts",
-          "fact-1": "Alexa can set timers, alarms, and reminders with simple voice commands.",
-          "fact-2": "It can control many smart-home devices like lights, plugs, and thermostats.",
-          "fact-3": "You can create custom voice commands with Alexa Routines.",
-          "fact-4": "Alexa can play music, podcasts, audiobooks, and radio stations.",
-          "fact-5": "Developers can build voice apps for Alexa called Skills.",
+          eyebrow: "Alexa family",
+          title: "Choose your Alexa",
+          intro: "Browse three smart speaker experiences designed for different rooms and routines.",
+          "dot-copy": "A compact smart speaker for bedrooms, kitchens, and quick voice commands.",
+          "dot-cta": "Explore Echo Dot",
+          "show-copy": "A screen-based Alexa experience for video calls, recipes, and visuals.",
+          "show-cta": "Explore Echo Show",
+          "studio-copy": "A premium Alexa speaker with rich sound for music lovers and larger rooms.",
+          "studio-cta": "Explore Echo Studio",
           "theme-light": "☀️ Light mode",
           "theme-dark": "🌙 Dark mode"
         },
         es: {
-          eyebrow: "Compañera del hogar inteligente",
-          title: "Conoce a Alexa",
-          intro:
-            "Alexa es una asistente por voz amigable que te ayuda a mantenerte organizado, disfrutar la música y controlar tu hogar con simples comandos.",
-          cta: "Explorar Alexa",
-          "toggle-show": "Mostrar 5 datos curiosos sobre Alexa",
-          "toggle-hide": "Ocultar datos curiosos",
-          "mini-card": "Siempre lista para ayudar",
-          "card-1-title": "Control por voz",
-          "card-1-copy": "Ayuda sin manos para tus tareas diarias.",
-          "card-2-title": "Música",
-          "card-2-copy": "Reproduce tus canciones y podcasts favoritos.",
-          "card-3-title": "Hogar inteligente",
-          "card-3-copy": "Controla luces y dispositivos desde un solo lugar.",
-          "facts-label": "Datos rápidos",
-          "fact-1": "Alexa puede configurar temporizadores, alarmas y recordatorios con simples comandos de voz.",
-          "fact-2": "Puede controlar muchos dispositivos del hogar inteligente, como luces, enchufes y termostatos.",
-          "fact-3": "Puedes crear comandos de voz personalizados con Rutinas de Alexa.",
-          "fact-4": "Alexa puede reproducir música, podcasts, audiolibros y estaciones de radio.",
-          "fact-5": "Los desarrolladores pueden crear aplicaciones de voz para Alexa llamadas Skills.",
+          eyebrow: "Familia Alexa",
+          title: "Elige tu Alexa",
+          intro: "Explora tres experiencias de altavoces inteligentes diseñadas para distintos espacios y rutinas.",
+          "dot-copy": "Un altavoz inteligente compacto para dormitorios, cocinas y comandos rápidos por voz.",
+          "dot-cta": "Explorar Echo Dot",
+          "show-copy": "Una experiencia Alexa con pantalla para videollamadas, recetas y contenido visual.",
+          "show-cta": "Explorar Echo Show",
+          "studio-copy": "Un altavoz Alexa premium con sonido envolvente para amantes de la música y espacios grandes.",
+          "studio-cta": "Explorar Echo Studio",
           "theme-light": "☀️ Modo claro",
           "theme-dark": "🌙 Modo oscuro"
         }
       };
 
-      const factsToggle = document.getElementById("facts-toggle");
-      const factsList = document.getElementById("facts-list");
       const languageSelect = document.getElementById("language-select");
       const themeToggle = document.getElementById("theme-toggle");
       const translatableElements = document.querySelectorAll("[data-i18n]");
@@ -370,11 +325,6 @@
             element.textContent = dictionary[key];
           }
         });
-
-        const buttonLabel = factsList.classList.contains("show")
-          ? dictionary["toggle-hide"]
-          : dictionary["toggle-show"];
-        factsToggle.textContent = buttonLabel;
         updateThemeButtonLabel(lang);
         document.documentElement.lang = lang;
       }
@@ -392,15 +342,6 @@
         localStorage.setItem("theme", theme);
         updateThemeButtonLabel(languageSelect.value);
       }
-
-      factsToggle.addEventListener("click", () => {
-        factsList.classList.toggle("show");
-        const currentLang = languageSelect.value;
-        const dictionary = translations[currentLang] || translations.en;
-        factsToggle.textContent = factsList.classList.contains("show")
-          ? dictionary["toggle-hide"]
-          : dictionary["toggle-show"];
-      });
 
       themeToggle.addEventListener("click", () => {
         const nextTheme = document.body.getAttribute("data-theme") === "dark" ? "light" : "dark";
