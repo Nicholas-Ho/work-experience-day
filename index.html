@@ -3,85 +3,87 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Alexa Marketing Playground</title>
+    <title>Alexa Minimal Showcase</title>
     <style>
       :root {
-        font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+        font-family: "SF Pro Display", "Inter", "Segoe UI", sans-serif;
         color-scheme: light;
-        --bg: #f4f7fb;
-        --surface: #ffffff;
-        --surface-2: #f7fbff;
-        --text: #17324d;
-        --muted: #5d6f82;
-        --accent: #ff9900;
-        --accent-strong: #e47911;
-        --border: #e3eef8;
-        --shadow: 0 20px 45px rgba(23, 50, 77, 0.12);
+        --bg: #f5f7fb;
+        --surface: rgba(255, 255, 255, 0.78);
+        --surface-strong: #ffffff;
+        --surface-muted: #f7fbff;
+        --text: #0f172a;
+        --muted: #5c6b7d;
+        --accent: #0ea5e9;
+        --accent-strong: #0f766e;
+        --border: rgba(15, 23, 42, 0.08);
+        --shadow: 0 30px 70px rgba(15, 23, 42, 0.12);
       }
       body[data-theme="dark"] {
         color-scheme: dark;
-        --bg: #07121d;
-        --surface: #101c2b;
-        --surface-2: #162437;
-        --text: #f2f7ff;
-        --muted: #a8b6c7;
-        --accent: #ffb347;
-        --accent-strong: #ff9f1c;
-        --border: #243647;
-        --shadow: 0 20px 45px rgba(0, 0, 0, 0.35);
+        --bg: #030712;
+        --surface: rgba(15, 23, 42, 0.78);
+        --surface-strong: #0f172a;
+        --surface-muted: #111827;
+        --text: #f8fafc;
+        --muted: #cbd5e1;
+        --accent: #34d399;
+        --accent-strong: #2dd4bf;
+        --border: rgba(255, 255, 255, 0.1);
+        --shadow: 0 30px 80px rgba(0, 0, 0, 0.4);
       }
       * {
         box-sizing: border-box;
       }
+      html {
+        scroll-behavior: smooth;
+      }
       body {
         margin: 0;
         min-height: 100vh;
+        padding: 24px;
+        background: radial-gradient(circle at top left, rgba(14, 165, 233, 0.18), transparent 28%), linear-gradient(135deg, var(--bg), #e8f2ff);
+        color: var(--text);
         display: flex;
         align-items: center;
         justify-content: center;
-        padding: 24px;
-        background: linear-gradient(135deg, var(--bg), #dfefff);
-        color: var(--text);
+        cursor: none;
       }
       a {
         color: inherit;
         text-decoration: none;
       }
-      .dashboard {
-        width: min(100%, 1080px);
-        height: min(100vh - 48px, 920px);
-        max-height: 100%;
-        display: flex;
-        flex-direction: column;
+      .page {
+        width: min(100%, 1240px);
         background: var(--surface);
         border: 1px solid var(--border);
-        border-radius: 24px;
-        padding: 24px;
+        border-radius: 32px;
         box-shadow: var(--shadow);
+        backdrop-filter: blur(24px);
         overflow: hidden;
       }
       .topbar {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        gap: 16px;
-        margin-bottom: 20px;
+        padding: 24px 32px;
+        border-bottom: 1px solid var(--border);
       }
       .brand {
         display: inline-flex;
         align-items: center;
         gap: 10px;
         font-weight: 700;
-        font-size: 1.05rem;
+        letter-spacing: -0.02em;
       }
       .brand-mark {
+        width: 42px;
+        height: 42px;
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        width: 42px;
-        height: 42px;
-        border-radius: 12px;
-        background: var(--surface-2);
+        border-radius: 14px;
+        background: var(--surface-muted);
       }
       .brand-mark svg {
         width: 24px;
@@ -97,152 +99,130 @@
       .lang-switcher select {
         border: 1px solid var(--border);
         border-radius: 999px;
-        padding: 0.55rem 0.85rem;
+        padding: 0.6rem 0.9rem;
         font: inherit;
-        background: var(--surface-2);
+        background: var(--surface-muted);
         color: var(--text);
       }
       .theme-toggle {
         cursor: pointer;
       }
-      .content-shell {
-        flex: 1;
-        overflow-y: auto;
-        padding-right: 6px;
-      }
-      .intro-block {
-        margin-bottom: 16px;
-        padding: 18px 20px;
-        border-radius: 18px;
-        background: linear-gradient(135deg, var(--surface-2), transparent);
-        border: 1px solid var(--border);
+      .hero {
+        display: grid;
+        grid-template-columns: 1.05fr 0.95fr;
+        gap: 28px;
+        padding: 40px 32px 28px;
+        align-items: center;
       }
       .eyebrow {
-        margin: 0 0 0.5rem;
+        margin: 0 0 0.7rem;
         text-transform: uppercase;
-        letter-spacing: 0.24em;
-        font-size: 0.8rem;
+        letter-spacing: 0.28em;
+        font-size: 0.76rem;
         font-weight: 700;
         color: var(--accent-strong);
       }
-      h1,
-      h2 {
-        margin: 0 0 0.8rem;
-      }
       h1 {
-        font-size: clamp(1.8rem, 3vw, 2.8rem);
+        margin: 0 0 1rem;
+        font-size: clamp(2.1rem, 4vw, 3.4rem);
+        line-height: 0.95;
+        letter-spacing: -0.04em;
       }
-      p {
-        margin: 0 0 0.8rem;
-        line-height: 1.6;
+      .hero p {
+        margin: 0 0 1.1rem;
         color: var(--muted);
+        font-size: 1.05rem;
+        line-height: 1.7;
       }
-      .device-carousel {
-        position: relative;
-        overflow: hidden;
-        border-radius: 18px;
-        border: 1px solid var(--border);
-        background: var(--surface);
-      }
-      .device-track {
+      .hero-actions {
         display: flex;
-        transition: transform 0.3s ease;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 1.3rem;
       }
-      .device-card {
-        min-width: 100%;
-        display: grid;
-        grid-template-columns: 180px 1fr;
-        gap: 16px;
-        align-items: center;
-        padding: 20px;
-        min-height: 285px;
-        background: var(--surface);
-        border: 1px solid var(--border);
-        transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
-      }
-      .device-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 0 0 1px rgba(255, 153, 0, 0.35), 0 0 24px rgba(255, 153, 0, 0.28);
-      }
-      body[data-theme="dark"] .device-card:hover {
-        box-shadow: 0 0 0 1px rgba(255, 179, 71, 0.3), 0 0 26px rgba(255, 179, 71, 0.24);
-      }
-      .device-card--dot {
-        background: linear-gradient(135deg, #fdf4e7, var(--surface));
-      }
-      body[data-theme="dark"] .device-card--dot {
-        background: linear-gradient(135deg, #522d00, #1b1720);
-      }
-      .device-card--show {
-        background: linear-gradient(135deg, #eef8ff, var(--surface));
-      }
-      body[data-theme="dark"] .device-card--show {
-        background: linear-gradient(135deg, #0f2b43, #141c28);
-      }
-      .device-card--studio {
-        background: linear-gradient(135deg, #f4edff, var(--surface));
-      }
-      body[data-theme="dark"] .device-card--studio {
-        background: linear-gradient(135deg, #2d1c4b, #161423);
-      }
-      .device-visual {
-        display: flex;
+      .button {
+        display: inline-flex;
         align-items: center;
         justify-content: center;
-        min-height: 150px;
-        border-radius: 16px;
-        padding: 12px;
-        background: rgba(255, 255, 255, 0.7);
-      }
-      .device-visual img {
-        width: 100%;
-        max-width: 140px;
-        height: auto;
-        filter: drop-shadow(0 12px 20px rgba(23, 50, 77, 0.16));
-      }
-      .device-body h2 {
-        font-size: 1.2rem;
-      }
-      .carousel-controls {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-top: 12px;
-      }
-      .carousel-btn {
-        border: 1px solid var(--border);
         border-radius: 999px;
-        background: var(--surface-2);
-        color: var(--text);
-        padding: 0.55rem 0.8rem;
-        cursor: pointer;
-      }
-      .carousel-dots {
-        display: flex;
-        gap: 8px;
-      }
-      .carousel-dot {
-        width: 10px;
-        height: 10px;
-        border-radius: 999px;
-        background: var(--border);
-        border: 0;
-        padding: 0;
-        cursor: pointer;
-      }
-      .carousel-dot.active {
-        background: var(--accent-strong);
-      }
-      .primary-btn {
-        display: inline-block;
-        border: 0;
-        border-radius: 999px;
-        padding: 0.75rem 1rem;
-        font-size: 0.95rem;
+        padding: 0.8rem 1.1rem;
         font-weight: 700;
-        cursor: pointer;
-        color: #fff;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
+      .button:hover {
+        transform: translateY(-2px);
+      }
+      .button-primary {
+        color: white;
         background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+        box-shadow: 0 12px 28px rgba(14, 165, 233, 0.2);
+      }
+      .button-secondary {
+        background: var(--surface-muted);
+        border: 1px solid var(--border);
+      }
+      .hero-visual {
+        background: linear-gradient(145deg, rgba(14, 165, 233, 0.16), rgba(255, 255, 255, 0.2));
+        border: 1px solid var(--border);
+        border-radius: 28px;
+        padding: 18px;
+        min-height: 320px;
+      }
+      .hero-visual img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        min-height: 280px;
+        object-fit: cover;
+        border-radius: 22px;
+        box-shadow: 0 18px 40px rgba(15, 23, 42, 0.14);
+      }
+      .products {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 18px;
+        padding: 0 32px 32px;
+      }
+      .product-card {
+        background: var(--surface-strong);
+        border: 1px solid var(--border);
+        border-radius: 24px;
+        padding: 16px;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
+      .product-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 0 0 1px rgba(14, 165, 233, 0.22), 0 0 24px rgba(14, 165, 233, 0.16);
+      }
+      .product-card img {
+        display: block;
+        width: 100%;
+        height: 220px;
+        object-fit: cover;
+        border-radius: 18px;
+        margin-bottom: 14px;
+      }
+      .product-card h2 {
+        margin: 0 0 0.55rem;
+        font-size: 1.2rem;
+        letter-spacing: -0.02em;
+      }
+      .product-card p {
+        margin: 0 0 0.9rem;
+        color: var(--muted);
+        line-height: 1.6;
+      }
+      .product-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-weight: 700;
+        color: var(--accent-strong);
+      }
+      .build-time {
+        padding: 0 32px 24px;
+        color: var(--muted);
+        font-size: 0.92rem;
       }
       .cursor-trail {
         position: fixed;
@@ -256,7 +236,7 @@
         width: 14px;
         height: 14px;
         border-radius: 50%;
-        background: radial-gradient(circle, rgba(34, 211, 238, 0.95) 0%, rgba(14, 165, 233, 0.4) 40%, rgba(14, 165, 233, 0) 70%);
+        background: radial-gradient(circle, rgba(45, 212, 191, 0.95) 0%, rgba(14, 165, 233, 0.35) 45%, rgba(14, 165, 233, 0) 75%);
         transform: translate(-50%, -50%);
         filter: blur(1px);
         will-change: transform, left, top, opacity;
@@ -272,19 +252,19 @@
         white-space: nowrap;
         border: 0;
       }
-      @media (max-width: 780px) {
-        .device-card {
+      @media (max-width: 900px) {
+        .hero {
           grid-template-columns: 1fr;
         }
-        .device-visual {
-          min-height: 120px;
+        .products {
+          grid-template-columns: 1fr;
         }
       }
     </style>
   </head>
   <body>
     <div class="cursor-trail" id="cursor-trail" aria-hidden="true"></div>
-    <main class="dashboard">
+    <main class="page">
       <header class="topbar">
         <a class="brand" href="https://www.amazon.com/alexa" target="_blank" rel="noopener noreferrer">
           <span class="brand-mark" aria-hidden="true">
@@ -307,88 +287,83 @@
         </div>
       </header>
 
-      <section class="content-shell">
-        <div class="intro-block">
+      <section class="hero">
+        <div>
           <p class="eyebrow" data-i18n="eyebrow">Alexa family</p>
-          <h1 data-i18n="title">Choose your Alexa</h1>
-          <p data-i18n="intro">Browse three smart speaker experiences designed for different rooms and routines.</p>
-        </div>
-
-        <div class="device-carousel">
-          <div class="device-track" id="device-track">
-            <article class="device-card device-card--dot">
-              <div class="device-visual">
-                <img src="images/Alexa-Echo-Transparent-Image.png" alt="Echo Dot" />
-              </div>
-              <div class="device-body">
-                <h2>Echo Dot</h2>
-                <p data-i18n="dot-copy">A compact smart speaker for bedrooms, kitchens, and quick voice commands.</p>
-                <a class="primary-btn" href="https://www.amazon.com/alexa" target="_blank" rel="noopener noreferrer" data-i18n="dot-cta">Explore Echo Dot</a>
-              </div>
-            </article>
-
-            <article class="device-card device-card--show">
-              <div class="device-visual">
-                <img src="images/Alexa-Echo-Transparent-Image.png" alt="Echo Show" />
-              </div>
-              <div class="device-body">
-                <h2>Echo Show</h2>
-                <p data-i18n="show-copy">A screen-based Alexa experience for video calls, recipes, and visuals.</p>
-                <a class="primary-btn" href="https://www.amazon.com/alexa" target="_blank" rel="noopener noreferrer" data-i18n="show-cta">Explore Echo Show</a>
-              </div>
-            </article>
-
-            <article class="device-card device-card--studio">
-              <div class="device-visual">
-                <img src="images/Alexa-Echo-Transparent-Image.png" alt="Echo Studio" />
-              </div>
-              <div class="device-body">
-                <h2>Echo Studio</h2>
-                <p data-i18n="studio-copy">A premium Alexa speaker with rich sound for music lovers and larger rooms.</p>
-                <a class="primary-btn" href="https://www.amazon.com/alexa" target="_blank" rel="noopener noreferrer" data-i18n="studio-cta">Explore Echo Studio</a>
-              </div>
-            </article>
+          <h1 data-i18n="headline">A more thoughtful way to listen.</h1>
+          <p data-i18n="intro">From compact voice control to cinematic sound, every Alexa device is designed to feel calm, useful and beautifully integrated into daily life.</p>
+          <div class="hero-actions">
+            <a class="button button-primary" href="https://www.amazon.com/alexa" target="_blank" rel="noopener noreferrer" data-i18n="cta">Explore Alexa</a>
+            <a class="button button-secondary" href="#products" data-i18n="secondary">View the lineup</a>
           </div>
         </div>
-
-        <div class="carousel-controls">
-          <button class="carousel-btn" id="prev-btn" type="button" aria-label="Previous device">← Prev</button>
-          <div class="carousel-dots" id="carousel-dots"></div>
-          <button class="carousel-btn" id="next-btn" type="button" aria-label="Next device">Next →</button>
+        <div class="hero-visual">
+          <img src="https://images.unsplash.com/photo-1516280440614-37939bbacd81?auto=format&fit=crop&w=1200&q=80" alt="Stylized Alexa smart home environment" />
         </div>
-
-        <p id="build-time"></p>
       </section>
+
+      <section class="products" id="products">
+        <article class="product-card">
+          <img src="https://images.unsplash.com/photo-1518444065439-e933c06ce9cd?auto=format&fit=crop&w=900&q=80" alt="Echo Dot device" />
+          <h2 data-i18n="dot-title">Echo Dot</h2>
+          <p data-i18n="dot-copy">A compact smart speaker that fits beautifully into bedrooms, kitchens, and everyday routines.</p>
+          <a class="product-link" href="https://www.amazon.com/alexa" target="_blank" rel="noopener noreferrer" data-i18n="dot-link">Learn more →</a>
+        </article>
+        <article class="product-card">
+          <img src="https://images.unsplash.com/photo-1516321497487-e288fb19713f?auto=format&fit=crop&w=900&q=80" alt="Echo Show device" />
+          <h2 data-i18n="show-title">Echo Show</h2>
+          <p data-i18n="show-copy">A screen-based experience for hands-free calls, recipes, video and visual smart-home control.</p>
+          <a class="product-link" href="https://www.amazon.com/alexa" target="_blank" rel="noopener noreferrer" data-i18n="show-link">Learn more →</a>
+        </article>
+        <article class="product-card">
+          <img src="https://images.unsplash.com/photo-1516280440614-37939bbacd81?auto=format&fit=crop&w=900&q=80" alt="Echo Studio device" />
+          <h2 data-i18n="studio-title">Echo Studio</h2>
+          <p data-i18n="studio-copy">Immersive sound and rich detail for music lovers and larger rooms with premium audio.</p>
+          <a class="product-link" href="https://www.amazon.com/alexa" target="_blank" rel="noopener noreferrer" data-i18n="studio-link">Learn more →</a>
+        </article>
+      </section>
+
+      <p class="build-time" id="build-time"></p>
     </main>
+
     <script>
       const now = new Date();
-      document.getElementById("build-time").textContent =
-        `Loaded at ${now.toLocaleString()}`;
+      document.getElementById("build-time").textContent = `Loaded at ${now.toLocaleString()}`;
 
       const translations = {
         en: {
           eyebrow: "Alexa family",
-          title: "Choose your Alexa",
-          intro: "Browse three smart speaker experiences designed for different rooms and routines.",
-          "dot-copy": "A compact smart speaker for bedrooms, kitchens, and quick voice commands.",
-          "dot-cta": "Explore Echo Dot",
-          "show-copy": "A screen-based Alexa experience for video calls, recipes, and visuals.",
-          "show-cta": "Explore Echo Show",
-          "studio-copy": "A premium Alexa speaker with rich sound for music lovers and larger rooms.",
-          "studio-cta": "Explore Echo Studio",
+          headline: "A more thoughtful way to listen.",
+          intro: "From compact voice control to cinematic sound, every Alexa device is designed to feel calm, useful and beautifully integrated into daily life.",
+          cta: "Explore Alexa",
+          secondary: "View the lineup",
+          "dot-title": "Echo Dot",
+          "dot-copy": "A compact smart speaker that fits beautifully into bedrooms, kitchens, and everyday routines.",
+          "dot-link": "Learn more →",
+          "show-title": "Echo Show",
+          "show-copy": "A screen-based experience for hands-free calls, recipes, video and visual smart-home control.",
+          "show-link": "Learn more →",
+          "studio-title": "Echo Studio",
+          "studio-copy": "Immersive sound and rich detail for music lovers and larger rooms with premium audio.",
+          "studio-link": "Learn more →",
           "theme-light": "☀️ Light mode",
           "theme-dark": "🌙 Dark mode"
         },
         es: {
           eyebrow: "Familia Alexa",
-          title: "Elige tu Alexa",
-          intro: "Explora tres experiencias de altavoces inteligentes diseñadas para distintos espacios y rutinas.",
-          "dot-copy": "Un altavoz inteligente compacto para dormitorios, cocinas y comandos rápidos por voz.",
-          "dot-cta": "Explorar Echo Dot",
-          "show-copy": "Una experiencia Alexa con pantalla para videollamadas, recetas y contenido visual.",
-          "show-cta": "Explorar Echo Show",
-          "studio-copy": "Un altavoz Alexa premium con sonido envolvente para amantes de la música y espacios grandes.",
-          "studio-cta": "Explorar Echo Studio",
+          headline: "Una forma más thoughtful de escuchar.",
+          intro: "Desde el control por voz compacto hasta el sonido cinematográfico, cada dispositivo Alexa está diseñado para sentirse tranquilo, útil e integrado con elegancia en la vida diaria.",
+          cta: "Explorar Alexa",
+          secondary: "Ver la línea",
+          "dot-title": "Echo Dot",
+          "dot-copy": "Un altavoz inteligente compacto que encaja a la perfección en dormitorios, cocinas y rutinas cotidianas.",
+          "dot-link": "Saber más →",
+          "show-title": "Echo Show",
+          "show-copy": "Una experiencia con pantalla para llamadas sin manos, recetas, video y control visual del hogar inteligente.",
+          "show-link": "Saber más →",
+          "studio-title": "Echo Studio",
+          "studio-copy": "Sonido inmersivo y detalle rico para amantes de la música y habitaciones grandes con audio premium.",
+          "studio-link": "Saber más →",
           "theme-light": "☀️ Modo claro",
           "theme-dark": "🌙 Modo oscuro"
         }
@@ -421,53 +396,21 @@
       function animateTrail() {
         trailPoints[0].x = mouseX;
         trailPoints[0].y = mouseY;
-
         for (let i = 1; i < trailPoints.length; i += 1) {
           const prev = trailPoints[i - 1];
           const current = trailPoints[i];
           current.x += (prev.x - current.x) * 0.3;
           current.y += (prev.y - current.y) * 0.3;
         }
-
         trailPoints.forEach((point, index) => {
           point.el.style.left = `${point.x}px`;
           point.el.style.top = `${point.y}px`;
           point.el.style.opacity = `${Math.max(0, 1 - index / trailPoints.length)}`;
           point.el.style.transform = `translate(-50%, -50%) scale(${Math.max(0.45, 1 - index / (trailPoints.length * 1.25))})`;
         });
-
         requestAnimationFrame(animateTrail);
       }
       animateTrail();
-      const track = document.getElementById("device-track");
-      const prevBtn = document.getElementById("prev-btn");
-      const nextBtn = document.getElementById("next-btn");
-      const dotsContainer = document.getElementById("carousel-dots");
-      const slides = Array.from(track.children);
-      let currentIndex = 0;
-
-      slides.forEach((_, index) => {
-        const dot = document.createElement("button");
-        dot.className = "carousel-dot";
-        dot.type = "button";
-        dot.setAttribute("aria-label", `Go to slide ${index + 1}`);
-        dot.addEventListener("click", () => showSlide(index));
-        dotsContainer.appendChild(dot);
-      });
-
-      const dots = Array.from(dotsContainer.children);
-
-      function showSlide(index) {
-        currentIndex = (index + slides.length) % slides.length;
-        track.style.transform = `translateX(-${currentIndex * 100}%)`;
-        dots.forEach((dot, dotIndex) => {
-          dot.classList.toggle("active", dotIndex === currentIndex);
-        });
-      }
-
-      prevBtn.addEventListener("click", () => showSlide(currentIndex - 1));
-      nextBtn.addEventListener("click", () => showSlide(currentIndex + 1));
-      showSlide(0);
 
       function updateLanguage(lang) {
         const dictionary = translations[lang] || translations.en;
@@ -484,9 +427,7 @@
       function updateThemeButtonLabel(lang) {
         const currentTheme = document.body.getAttribute("data-theme") || "light";
         const dictionary = translations[lang] || translations.en;
-        themeToggle.textContent = currentTheme === "dark"
-          ? dictionary["theme-light"]
-          : dictionary["theme-dark"];
+        themeToggle.textContent = currentTheme === "dark" ? dictionary["theme-light"] : dictionary["theme-dark"];
       }
 
       function setTheme(theme) {
