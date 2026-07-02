@@ -56,6 +56,19 @@
         font-weight: 700;
         color: #4f8fc4;
       }
+      .lang-switcher {
+        display: flex;
+        justify-content: flex-end;
+        margin-bottom: 1rem;
+      }
+      .lang-switcher select {
+        border: 1px solid #d2e2ef;
+        border-radius: 999px;
+        padding: 0.45rem 0.8rem;
+        font: inherit;
+        color: #17324d;
+        background: #f8fbff;
+      }
       h1 {
         margin: 0 0 0.8rem;
         font-size: clamp(1.8rem, 3vw, 2.8rem);
@@ -118,24 +131,31 @@
         />
       </section>
       <section class="panel-right">
-        <p class="eyebrow">Smart home companion</p>
-        <h1>Meet Alexa</h1>
-        <p>
+        <div class="lang-switcher">
+          <label class="sr-only" for="language-select">Choose language</label>
+          <select id="language-select">
+            <option value="en">English</option>
+            <option value="es">Español</option>
+          </select>
+        </div>
+        <p class="eyebrow" data-i18n="eyebrow">Smart home companion</p>
+        <h1 data-i18n="title">Meet Alexa</h1>
+        <p data-i18n="intro">
           Alexa is a friendly voice assistant that helps you stay organized, enjoy music,
           and control your home with simple commands.
         </p>
         <ul>
-          <li>Set reminders, alarms, and routines in seconds</li>
-          <li>Play your favorite songs and podcasts hands-free</li>
-          <li>Control lights, plugs, and other smart devices</li>
+          <li data-i18n="feature-1">Set reminders, alarms, and routines in seconds</li>
+          <li data-i18n="feature-2">Play your favorite songs and podcasts hands-free</li>
+          <li data-i18n="feature-3">Control lights, plugs, and other smart devices</li>
         </ul>
-        <button id="facts-toggle" type="button">Show 5 fun facts about Alexa</button>
+        <button id="facts-toggle" type="button" data-i18n="toggle-show">Show 5 fun facts about Alexa</button>
         <ul id="facts-list">
-          <li>Alexa can set timers, alarms, and reminders with simple voice commands.</li>
-          <li>It can control many smart-home devices like lights, plugs, and thermostats.</li>
-          <li>You can create custom voice commands with Alexa Routines.</li>
-          <li>Alexa can play music, podcasts, audiobooks, and radio stations.</li>
-          <li>Developers can build voice apps for Alexa called Skills.</li>
+          <li data-i18n="fact-1">Alexa can set timers, alarms, and reminders with simple voice commands.</li>
+          <li data-i18n="fact-2">It can control many smart-home devices like lights, plugs, and thermostats.</li>
+          <li data-i18n="fact-3">You can create custom voice commands with Alexa Routines.</li>
+          <li data-i18n="fact-4">Alexa can play music, podcasts, audiobooks, and radio stations.</li>
+          <li data-i18n="fact-5">Developers can build voice apps for Alexa called Skills.</li>
         </ul>
         <p id="build-time"></p>
       </section>
@@ -144,14 +164,77 @@
       const now = new Date();
       document.getElementById("build-time").textContent =
         `Loaded at ${now.toLocaleString()}`;
+
+      const translations = {
+        en: {
+          eyebrow: "Smart home companion",
+          title: "Meet Alexa",
+          intro:
+            "Alexa is a friendly voice assistant that helps you stay organized, enjoy music, and control your home with simple commands.",
+          "feature-1": "Set reminders, alarms, and routines in seconds",
+          "feature-2": "Play your favorite songs and podcasts hands-free",
+          "feature-3": "Control lights, plugs, and other smart devices",
+          "toggle-show": "Show 5 fun facts about Alexa",
+          "toggle-hide": "Hide fun facts",
+          "fact-1": "Alexa can set timers, alarms, and reminders with simple voice commands.",
+          "fact-2": "It can control many smart-home devices like lights, plugs, and thermostats.",
+          "fact-3": "You can create custom voice commands with Alexa Routines.",
+          "fact-4": "Alexa can play music, podcasts, audiobooks, and radio stations.",
+          "fact-5": "Developers can build voice apps for Alexa called Skills."
+        },
+        es: {
+          eyebrow: "Compañera del hogar inteligente",
+          title: "Conoce a Alexa",
+          intro:
+            "Alexa es una asistente por voz amigable que te ayuda a mantenerte organizado, disfrutar la música y controlar tu hogar con simples comandos.",
+          "feature-1": "Configura recordatorios, alarmas y rutinas en segundos",
+          "feature-2": "Reproduce tus canciones y podcasts favoritos sin manos",
+          "feature-3": "Controla luces, enchufes y otros dispositivos inteligentes",
+          "toggle-show": "Mostrar 5 datos curiosos sobre Alexa",
+          "toggle-hide": "Ocultar datos curiosos",
+          "fact-1": "Alexa puede configurar temporizadores, alarmas y recordatorios con simples comandos de voz.",
+          "fact-2": "Puede controlar muchos dispositivos del hogar inteligente, como luces, enchufes y termostatos.",
+          "fact-3": "Puedes crear comandos de voz personalizados con Rutinas de Alexa.",
+          "fact-4": "Alexa puede reproducir música, podcasts, audiolibros y estaciones de radio.",
+          "fact-5": "Los desarrolladores pueden crear aplicaciones de voz para Alexa llamadas Skills."
+        }
+      };
+
       const factsToggle = document.getElementById("facts-toggle");
       const factsList = document.getElementById("facts-list");
+      const languageSelect = document.getElementById("language-select");
+      const translatableElements = document.querySelectorAll("[data-i18n]");
+
+      function updateLanguage(lang) {
+        const dictionary = translations[lang] || translations.en;
+        translatableElements.forEach((element) => {
+          const key = element.getAttribute("data-i18n");
+          if (dictionary[key]) {
+            element.textContent = dictionary[key];
+          }
+        });
+
+        const buttonLabel = factsList.classList.contains("show")
+          ? dictionary["toggle-hide"]
+          : dictionary["toggle-show"];
+        factsToggle.textContent = buttonLabel;
+        document.documentElement.lang = lang;
+      }
+
       factsToggle.addEventListener("click", () => {
         factsList.classList.toggle("show");
+        const currentLang = languageSelect.value;
+        const dictionary = translations[currentLang] || translations.en;
         factsToggle.textContent = factsList.classList.contains("show")
-          ? "Hide fun facts"
-          : "Show 5 fun facts about Alexa";
+          ? dictionary["toggle-hide"]
+          : dictionary["toggle-show"];
       });
+
+      languageSelect.addEventListener("change", (event) => {
+        updateLanguage(event.target.value);
+      });
+
+      updateLanguage(languageSelect.value);
     </script>
   </body>
 </html>
