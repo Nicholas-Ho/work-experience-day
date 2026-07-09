@@ -288,10 +288,23 @@
         animation: sparkle-pop 0.9s ease-out forwards;
         z-index: 6;
       }
+      .confetti {
+        position: fixed;
+        width: 10px;
+        height: 16px;
+        border-radius: 2px;
+        pointer-events: none;
+        z-index: 7;
+        animation: confetti-fall 1.15s linear forwards;
+      }
       @keyframes sparkle-pop {
         0% { opacity: 0; transform: translate3d(0, 0, 0) scale(0.6); }
         30% { opacity: 1; }
         100% { opacity: 0; transform: translate3d(0, -48px, 0) scale(1.2); }
+      }
+      @keyframes confetti-fall {
+        0% { opacity: 1; transform: translate3d(0, 0, 0) rotate(0deg); }
+        100% { opacity: 0; transform: translate3d(var(--x-end), 140px, 0) rotate(720deg); }
       }
       .carousel-section {
         width: min(90vw, 920px);
@@ -608,22 +621,41 @@
       const clickerButton = document.getElementById("alexa-clicker");
       const scoreEl = document.getElementById("cookie-score");
       let clicks = 0;
+      let audioContext = null;
+      let musicStarted = false;
+      let musicTimer = null;
 
-      function playTone() {
-        const AudioContext = window.AudioContext || window.webkitAudioContext;
-        if (!AudioContext) return;
-        const ctx = new AudioContext();
-        const oscillator = ctx.createOscillator();
-        const gainNode = ctx.createGain();
-        oscillator.type = "sine";
-        oscillator.frequency.value = 880;
-        gainNode.gain.value = 0.08;
-        oscillator.connect(gainNode);
-        gainNode.connect(ctx.destination);
-        oscillator.start();
-        gainNode.gain.exponentialRampToValueAtTime(0.00001, ctx.currentTime + 0.2);
-        oscillator.stop(ctx.currentTime + 0.2);
-        ctx.close().catch(() => {});
+      function ensureAudioContext() {
+        if (!audioContext) {
+          const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+          if (!AudioContextClass) return null;
+          audioContext = new AudioContextClass();
+        }
+        if (audioContext.state === "suspended") {
+          audioContext.resume();
+        }
+        return audioContext;
+      }
+
+      function playClickSound() {
+        const ctx = ensureAudioContext();
+        if (!ctx) return;
+        const now = ctx.currentTime;
+        const burst = [660, 880, 1120];
+        burst.forEach((freq, index) => {
+          const oscillator = ctx.createOscillator();
+          const gainNode = ctx.createGain();
+          oscillator.type = index % 2 === 0 ? "triangle" : "sine";
+          oscillator.frequency.setValueAtTime(freq, now);
+          oscillator.frequency.exponentialRampToValueAtTime(freq + 80, now + 0.14);
+          gainNode.gain.setValueAtTime(0.0001, now);
+          gainNode.gain.exponentialRampToValueAtTime(0.06, now + 0.01);
+          gainNode.gain.exponentialRampToValueAtTime(0.0001, now + 0.22);
+          oscillator.connect(gainNode);
+          gainNode.connect(ctx.destination);
+          oscillator.start(now + index * 0.01);
+          oscillator.stop(now + 0.24);
+        });
       }
 
       function createSparkle() {
@@ -636,11 +668,54 @@
         setTimeout(() => sparkle.remove(), 900);
       }
 
+      function createConfetti() {
+        const colors = ["#ff5fa2", "#ffcf56", "#fff", "#ff8fab", "#c56cff"];
+        for (let index = 0; index < 20; index += 1) {
+          const piece = document.createElement("span");
+          piece.className = "confetti";
+          piece.style.left = `${Math.random() * 100}vw`;
+          piece.style.top = "-12px";
+          piece.style.background = colors[index % colors.length];
+          piece.style.setProperty("--x-end", `${(Math.random() - 0.5) * 220}px`);
+          document.body.appendChild(piece);
+          setTimeout(() => piece.remove(), 1200);
+        }
+      }
+
+      function startBackgroundMusic() {
+        if (musicStarted) return;
+        const ctx = ensureAudioContext();
+        if (!ctx) return;
+        musicStarted = true;
+        const notes = [523.25, 659.25, 783.99, 659.25, 587.33, 698.46, 783.99, 698.46];
+        let step = 0;
+        const playNextNote = () => {
+          if (!musicStarted) return;
+          const now = ctx.currentTime;
+          const oscillator = ctx.createOscillator();
+          const gainNode = ctx.createGain();
+          oscillator.type = "triangle";
+          oscillator.frequency.setValueAtTime(notes[step % notes.length], now);
+          gainNode.gain.setValueAtTime(0.0001, now);
+          gainNode.gain.linearRampToValueAtTime(0.025, now + 0.04);
+          gainNode.gain.exponentialRampToValueAtTime(0.0001, now + 0.65);
+          oscillator.connect(gainNode);
+          gainNode.connect(ctx.destination);
+          oscillator.start(now);
+          oscillator.stop(now + 0.65);
+          step += 1;
+          musicTimer = window.setTimeout(playNextNote, 480);
+        };
+        playNextNote();
+      }
+
       clickerButton.addEventListener("click", () => {
         clicks += 1;
         scoreEl.textContent = `Alexa clicks: ${clicks}`;
-        playTone();
+        playClickSound();
         createSparkle();
+        createConfetti();
+        startBackgroundMusic();
       });
 
       const now = new Date();
@@ -648,12 +723,14 @@
         `Loaded at ${now.toLocaleString()}`;
       const factsToggle = document.getElementById("facts-toggle");
       const factsList = document.getElementById("facts-list");
-      factsToggle.addEventListener("click", () => {
-        factsList.classList.toggle("show");
-        factsToggle.textContent = factsList.classList.contains("show")
-          ? "Hide fun facts"
-          : "Show 5 fun facts about Alexa";
-      });
+      if (factsToggle && factsList) {
+        factsToggle.addEventListener("click", () => {
+          factsList.classList.toggle("show");
+          factsToggle.textContent = factsList.classList.contains("show")
+            ? "Hide fun facts"
+            : "Show 5 fun facts about Alexa";
+        });
+      }
 
       const models = [
         {
