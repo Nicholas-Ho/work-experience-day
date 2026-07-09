@@ -7,6 +7,7 @@
     <style>
       :root {
         font-family: Arial, Helvetica, sans-serif;
+        color-scheme: light;
       }
       body {
         margin: 0;
@@ -17,8 +18,39 @@
         justify-content: flex-start;
         gap: 2rem;
         padding: 2rem 1rem 3rem;
-        background: radial-gradient(circle at top left, #0f4a8f 0%, #005ea6 35%, #001f3d 100%);
+        background:
+          radial-gradient(circle at 18% 12%, rgba(255, 255, 255, 0.8) 0 2px, transparent 3px),
+          radial-gradient(circle at 80% 16%, rgba(255, 255, 255, 0.75) 0 2px, transparent 3px),
+          radial-gradient(circle at 35% 82%, rgba(255, 255, 255, 0.7) 0 2px, transparent 3px),
+          linear-gradient(135deg, #ffd7ea 0%, #ff9dc8 38%, #ff6fa9 100%);
         color: #fff;
+        position: relative;
+        overflow-x: hidden;
+      }
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        background:
+          linear-gradient(110deg, transparent 0%, rgba(255, 255, 255, 0.3) 46%, transparent 74%),
+          radial-gradient(circle at 20% 15%, rgba(255, 255, 255, 0.9) 0 2px, transparent 3px),
+          radial-gradient(circle at 78% 28%, rgba(255, 255, 255, 0.85) 0 2px, transparent 3px),
+          radial-gradient(circle at 44% 74%, rgba(255, 255, 255, 0.8) 0 2px, transparent 3px),
+          radial-gradient(circle at 90% 82%, rgba(255, 255, 255, 0.88) 0 2px, transparent 3px);
+        background-size: 100% 100%, 220px 220px, 180px 180px, 260px 260px, 200px 200px;
+        animation: shimmer 7s linear infinite;
+        z-index: 0;
+        opacity: 0.95;
+      }
+      body > * {
+        position: relative;
+        z-index: 1;
+      }
+      @keyframes shimmer {
+        0% { transform: translate3d(-3%, -2%, 0); }
+        50% { transform: translate3d(2%, 1%, 0); }
+        100% { transform: translate3d(-3%, -2%, 0); }
       }
       .alexa-corner {
         position: fixed;
@@ -103,12 +135,31 @@
       }
       .card {
         text-align: center;
-        background: rgba(5, 24, 63, 0.85);
-        border: 1px solid rgba(255, 255, 255, 0.18);
+        background: rgba(80, 20, 53, 0.86);
+        border: 1px solid rgba(255, 255, 255, 0.22);
         border-radius: 22px;
         padding: 2rem;
         width: min(90vw, 720px);
         box-shadow: 0 18px 40px rgba(0, 0, 0, 0.28);
+      }
+      .bubble-box {
+        margin: 1.3rem auto 0;
+        width: min(92%, 440px);
+        background: linear-gradient(135deg, #fff8fc, #ffe3ef);
+        border: 2px solid #ff7fb3;
+        border-radius: 28px;
+        padding: 1rem 1.15rem;
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.16);
+        transform: rotate(-1.2deg);
+      }
+      .bubble-quote {
+        margin: 0;
+        font-family: "Comic Sans MS", "Trebuchet MS", cursive;
+        font-size: clamp(1.2rem, 2.2vw, 1.7rem);
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        color: #9b1f56;
+        text-shadow: 1px 1px 0 #ffffff, 2px 2px 0 rgba(155, 31, 86, 0.18);
       }
       .scene {
         display: grid;
@@ -185,6 +236,54 @@
       }
       .carousel-section {
         width: min(90vw, 920px);
+      }
+      .comparison-section {
+        width: min(92vw, 1120px);
+      }
+      .comparison-card {
+        background: rgba(255, 255, 255, 0.16);
+        border: 1px solid rgba(255, 255, 255, 0.28);
+        border-radius: 28px;
+        padding: 1.8rem;
+        box-shadow: 0 18px 40px rgba(0, 0, 0, 0.2);
+        backdrop-filter: blur(12px);
+      }
+      .comparison-card h2 {
+        margin: 0 0 0.6rem;
+        font-size: clamp(1.5rem, 2.3vw, 2rem);
+      }
+      .comparison-card p {
+        margin-bottom: 1rem;
+        opacity: 0.95;
+      }
+      .comparison-table {
+        width: 100%;
+        border-collapse: collapse;
+        background: rgba(255, 255, 255, 0.95);
+        color: #4e1b39;
+        overflow: hidden;
+        border-radius: 16px;
+      }
+      .comparison-table th,
+      .comparison-table td {
+        border: 1px solid #ffdce9;
+        padding: 0.9rem 0.85rem;
+        vertical-align: top;
+        text-align: left;
+        line-height: 1.55;
+      }
+      .comparison-table thead th {
+        background: #ff6fa8;
+        color: #fff;
+        font-size: 0.95rem;
+      }
+      .comparison-table tbody th {
+        background: #fff3f8;
+        font-weight: 700;
+        min-width: 120px;
+      }
+      .comparison-table td {
+        font-size: 0.95rem;
       }
       .carousel-card {
         background: rgba(255, 255, 255, 0.06);
@@ -341,6 +440,9 @@
         <li>Add a headline and call-to-action</li>
         <li>Make it fun and memorable</li>
       </ul>
+      <div class="bubble-box" role="note" aria-label="Bubble quote">
+        <p class="bubble-quote">“Ivy, please stop talking”</p>
+      </div>
       <button id="facts-toggle" type="button">Show 5 fun facts about Alexa</button>
       <ul id="facts-list">
         <li>Alexa can set timers, alarms, and reminders with simple voice commands.</li>
@@ -368,6 +470,67 @@
           "Alexa is built to make every home smarter and simpler. Voice controls thousands of devices, lets customers listen to music on demand, and learns from every interaction to get better over time.
           <strong>Smart home, music, shopping, and productivity</strong> all come together in one assistant."
         </p>
+      </div>
+    </section>
+    <section class="comparison-section" aria-label="Alexa versus Google Assistant comparison">
+      <div class="comparison-card">
+        <h2>Alexa vs Google Assistant: pros and cons</h2>
+        <p>This side-by-side comparison looks at two of the biggest voice assistants in everyday life, with a focus on smart homes, voice quality, ecosystem fit, privacy, and how each one feels to use over time.</p>
+        <table class="comparison-table">
+          <thead>
+            <tr>
+              <th scope="col">Category</th>
+              <th scope="col">Alexa pros</th>
+              <th scope="col">Alexa cons</th>
+              <th scope="col">Google Assistant pros</th>
+              <th scope="col">Google Assistant cons</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">Smart home</th>
+              <td>Alexa has the widest support for third-party smart-home devices, so it often works with more brands, plugs, bulbs, sensors, and home hubs in a single setup.</td>
+              <td>Some devices work well, but compatibility can get messy when brands use different standards or when setup requires extra apps and accounts.</td>
+              <td>Google Assistant feels polished in homes that already use Nest, Pixel, and other Google products, with a very smooth experience for lights, speakers, and routines.</td>
+              <td>Its smart-home support is excellent in Google’s own ecosystem, but it can feel less universal than Alexa when a household mixes many different brands.</td>
+            </tr>
+            <tr>
+              <th scope="row">Voice understanding</th>
+              <td>Alexa is strong for straightforward commands, timers, reminders, shopping lists, and quick household requests, especially in busy family settings.</td>
+              <td>Voice recognition can sometimes feel less natural when the command is complex, conversational, or spoken with a strong accent or background noise.</td>
+              <td>Google Assistant is often praised for understanding more conversational language and follow-up questions, which makes it feel more like talking to a real assistant.</td>
+              <td>It can still struggle with very specific routines or highly customized commands, especially when a home setup is more advanced than standard usage.</td>
+            </tr>
+            <tr>
+              <th scope="row">Music and media</th>
+              <td>Alexa is deeply tied to Amazon Music, podcasts, audiobooks, and Prime benefits, which makes it attractive to people already invested in Amazon services.</td>
+              <td>Its media experience can feel less polished if a household prefers Spotify, Apple Music, or other services that are not always the first-class choice.</td>
+              <td>Google Assistant shines when paired with YouTube, Google Play Music, and other Google services, making it an easy fit for people who spend time inside Google’s ecosystem.</td>
+              <td>Some users find that Google’s media experience is less seamless outside of its own services, especially if they prefer Amazon-based shopping and entertainment.</td>
+            </tr>
+            <tr>
+              <th scope="row">Shopping and convenience</th>
+              <td>Alexa is a major strength for shopping, reordering household essentials, checking delivery status, and making purchases through Amazon without opening an app.</td>
+              <td>That convenience can feel too commercial for people who want a more neutral assistant, and shopping features can feel overly promotional in some contexts.</td>
+              <td>Google Assistant is better at finding general information, local results, maps, and quick web answers, which makes it feel more useful for everyday discovery.</td>
+              <td>It is less naturally designed around direct shopping and repeat purchases, so it does not feel as strong for Amazon-style convenience.</td>
+            </tr>
+            <tr>
+              <th scope="row">Privacy and trust</th>
+              <td>Alexa offers many privacy controls, mute buttons, and account settings, and it has improved its privacy posture over time as more households have adopted it.</td>
+              <td>Because it is so deeply connected to Amazon services, some people worry about data collection, advertising, and how much of their usage feeds into the broader ecosystem.</td>
+              <td>Google Assistant benefits from Google’s strong search and productivity brand, but it also raises privacy questions because of how closely it is tied to Google accounts and data tracking.</td>
+              <td>Some users feel uneasy about how much personal data may be used to tailor search, ads, and recommendations, even when the assistant is working as expected.</td>
+            </tr>
+            <tr>
+              <th scope="row">Device variety</th>
+              <td>Alexa is available on a huge range of speakers, displays, smart plugs, thermostats, and kitchen devices, which makes it easy to build a full home setup.</td>
+              <td>The sheer number of compatible devices can create a crowded experience, and not every product offers the same quality or long-term support.</td>
+              <td>Google Assistant is strongest on phones, Nest speakers, and Pixel devices, which makes it feel effortless for users already living inside the Android and Google world.</td>
+              <td>Its hardware ecosystem is excellent for Google loyalists, but less flexible if you want a very broad mix of devices from many manufacturers.</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </section>
     <section class="carousel-section" aria-label="Alexa model carousel">
