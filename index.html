@@ -58,19 +58,17 @@
         width: 160px;
         height: 160px;
         border-radius: 50%;
-        background: linear-gradient(180deg, #d8d8d8 0%, #f3f3f3 45%, #bdbdbd 100%);
+        overflow: hidden;
+        background: #eef2f7;
         display: grid;
         place-items: center;
         border: 4px solid rgba(255, 255, 255, 0.35);
         box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2);
-        position: relative;
       }
-      .avatar::before {
-        content: "J.B.";
-        color: #002f5c;
-        font-size: 2rem;
-        font-weight: 900;
-        letter-spacing: 0.2rem;
+      .avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
       }
       .bezos-name {
         font-size: 1.1rem;
@@ -111,6 +109,93 @@
       }
       .scene p {
         margin: 0;
+      }
+      .carousel-section {
+        width: min(90vw, 920px);
+      }
+      .carousel-card {
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 28px;
+        padding: 1.8rem 1.5rem;
+        box-shadow: 0 18px 40px rgba(0, 0, 0, 0.22);
+      }
+      .carousel-header {
+        display: grid;
+        gap: 0.5rem;
+        margin-bottom: 1.5rem;
+      }
+      .carousel-header h2,
+      .carousel-header p {
+        margin: 0;
+      }
+      .carousel-header p {
+        color: rgba(255, 255, 255, 0.78);
+      }
+      .carousel {
+        display: grid;
+        grid-template-columns: 56px minmax(0, 1fr) 56px;
+        align-items: center;
+        gap: 1rem;
+      }
+      .carousel-arrow {
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        background: rgba(255, 255, 255, 0.08);
+        color: #fff;
+        font-size: 1.5rem;
+        cursor: pointer;
+        transition: transform 0.2s ease, background 0.2s ease;
+      }
+      .carousel-arrow:hover {
+        transform: translateY(-1px);
+        background: rgba(255, 255, 255, 0.14);
+      }
+      .carousel-slide {
+        background: rgba(0, 107, 179, 0.14);
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        border-radius: 22px;
+        padding: 1.5rem;
+        display: grid;
+        gap: 1rem;
+      }
+      .carousel-slide h3 {
+        margin: 0;
+        font-size: clamp(1.35rem, 2vw, 1.7rem);
+      }
+      .carousel-slide p {
+        margin: 0;
+        opacity: 0.92;
+      }
+      .spec-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: grid;
+        gap: 0.6rem;
+      }
+      .spec-list li::before {
+        content: "•";
+        margin-right: 0.5rem;
+        color: #7cd4ff;
+      }
+      .carousel-link {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: fit-content;
+        padding: 0.75rem 1.1rem;
+        border-radius: 999px;
+        background: #00b0ff;
+        color: #022343;
+        font-weight: 700;
+        text-decoration: none;
+        transition: filter 0.2s ease;
+      }
+      .carousel-link:hover {
+        filter: brightness(1.05);
       }
       h1 {
         margin-top: 0;
@@ -181,7 +266,12 @@
     </main>
     <section class="scene" aria-label="Jeff Bezos Alexa message">
       <div class="profile-card">
-        <div class="avatar" aria-hidden="true"></div>
+        <div class="avatar">
+          <img
+            src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Jeff_Bezos%27_portrait_in_2017.jpg/512px-Jeff_Bezos%27_portrait_in_2017.jpg"
+            alt="Jeff Bezos portrait"
+          />
+        </div>
         <p class="bezos-name">Jeff Bezos</p>
       </div>
       <div class="speech-bubble" role="region" aria-label="Alexa facts speech bubble">
@@ -190,6 +280,28 @@
           "Alexa is built to make every home smarter and simpler. Voice controls thousands of devices, lets customers listen to music on demand, and learns from every interaction to get better over time.
           <strong>Smart home, music, shopping, and productivity</strong> all come together in one assistant."
         </p>
+      </div>
+    </section>
+    <section class="carousel-section" aria-label="Alexa model carousel">
+      <div class="carousel-card">
+        <div class="carousel-header">
+          <h2>Alexa model showcase</h2>
+          <p>Swipe through three previous Alexa devices and see how each Echo shaped the smart home.</p>
+        </div>
+        <div class="carousel">
+          <button id="prev-model" class="carousel-arrow" aria-label="Previous model">←</button>
+          <div class="carousel-slide" id="carousel-slide">
+            <h3 id="model-title">Echo Dot (3rd Gen)</h3>
+            <p id="model-description">Compact voice control with a fabric finish and improved sound for music and smart home control.</p>
+            <ul class="spec-list" id="model-specs">
+              <li>Compact puck design</li>
+              <li>Bluetooth and 3.5mm audio output</li>
+              <li>Far-field voice recognition</li>
+            </ul>
+            <a id="model-link" class="carousel-link" href="https://www.amazon.com/dp/B07FZ8S74R" target="_blank" rel="noopener">View on Amazon</a>
+          </div>
+          <button id="next-model" class="carousel-arrow" aria-label="Next model">→</button>
+        </div>
       </div>
     </section>
     <script>
@@ -204,6 +316,66 @@
           ? "Hide fun facts"
           : "Show 5 fun facts about Alexa";
       });
+
+      const models = [
+        {
+          title: "Echo Dot (3rd Gen)",
+          description: "A compact Alexa speaker with improved sound and an iconic fabric design, built for bedrooms and small living spaces.",
+          specs: [
+            "Compact puck design with fabric finish",
+            "Bluetooth and 3.5mm audio output",
+            "Far-field voice recognition for distance commands"
+          ],
+          link: "https://www.amazon.com/dp/B07FZ8S74R"
+        },
+        {
+          title: "Echo Show 5 (1st Gen)",
+          description: "An Alexa smart display that brings video calls, visual routines, and hands-free help to bedside tables and kitchens.",
+          specs: [
+            "5.5-inch touchscreen display",
+            "Built-in camera for video calling",
+            "Compact footprint with clock mode"
+          ],
+          link: "https://www.amazon.com/dp/B07HZLHPKP"
+        },
+        {
+          title: "Echo Plus (2nd Gen)",
+          description: "A premium Echo with enhanced sound and built-in smart home hub support for direct Zigbee device control.",
+          specs: [
+            "Premium audio with Dolby processing",
+            "Built-in Zigbee smart home hub",
+            "Voice control for lights, locks, and sensors"
+          ],
+          link: "https://www.amazon.com/dp/B0792KTHKJ"
+        }
+      ];
+
+      let currentModel = 0;
+      const title = document.getElementById("model-title");
+      const description = document.getElementById("model-description");
+      const specs = document.getElementById("model-specs");
+      const link = document.getElementById("model-link");
+      const prevButton = document.getElementById("prev-model");
+      const nextButton = document.getElementById("next-model");
+
+      function renderModel(index) {
+        const model = models[index];
+        title.textContent = model.title;
+        description.textContent = model.description;
+        specs.innerHTML = model.specs.map(item => `<li>${item}</li>`).join("");
+        link.href = model.link;
+      }
+
+      prevButton.addEventListener("click", () => {
+        currentModel = (currentModel - 1 + models.length) % models.length;
+        renderModel(currentModel);
+      });
+      nextButton.addEventListener("click", () => {
+        currentModel = (currentModel + 1) % models.length;
+        renderModel(currentModel);
+      });
+
+      renderModel(currentModel);
     </script>
   </body>
 </html>
