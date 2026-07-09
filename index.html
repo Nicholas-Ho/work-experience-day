@@ -104,12 +104,12 @@
         left: 50%;
         transform: translateX(-50%);
         width: min(82vw, 560px);
-        background: rgba(0, 35, 84, 0.9);
-        border: 1px solid rgba(255, 255, 255, 0.22);
+        background: rgba(255, 248, 252, 0.92);
+        border: none;
         border-radius: 38px;
         padding: 1.3rem 1.6rem;
-        color: #f5fbff;
-        box-shadow: 0 24px 48px rgba(0, 0, 0, 0.3);
+        color: #8e234c;
+        box-shadow: 0 16px 34px rgba(0, 0, 0, 0.2);
         backdrop-filter: blur(10px);
       }
       .speech-hero::after {
@@ -120,7 +120,7 @@
         transform: translateX(-50%);
         border-width: 18px 16px 0 16px;
         border-style: solid;
-        border-color: rgba(0, 35, 84, 0.9) transparent transparent transparent;
+        border-color: rgba(255, 248, 252, 0.92) transparent transparent transparent;
       }
       .speech-hero strong {
         display: block;
@@ -135,12 +135,12 @@
       }
       .card {
         text-align: center;
-        background: rgba(80, 20, 53, 0.86);
-        border: 1px solid rgba(255, 255, 255, 0.22);
-        border-radius: 22px;
-        padding: 2rem;
+        background: transparent;
+        border: none;
+        border-radius: 0;
+        padding: 0;
         width: min(90vw, 720px);
-        box-shadow: 0 18px 40px rgba(0, 0, 0, 0.28);
+        box-shadow: none;
       }
       .bubble-box {
         margin: 1.3rem auto 0;
@@ -202,13 +202,13 @@
       }
       .speech-bubble {
         position: relative;
-        background: rgba(0, 140, 212, 0.14);
-        border: 1px solid rgba(255, 255, 255, 0.2);
+        background: rgba(255, 248, 252, 0.94);
+        border: none;
         border-radius: 28px;
         padding: 1.6rem 1.8rem;
-        color: #f1f9ff;
+        color: #7a2a4d;
         line-height: 1.6;
-        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.16);
       }
       .speech-bubble::after {
         content: "";
@@ -217,7 +217,7 @@
         left: 40px;
         border-width: 22px 18px 0 18px;
         border-style: solid;
-        border-color: rgba(0, 140, 212, 0.14) transparent transparent transparent;
+        border-color: rgba(255, 248, 252, 0.94) transparent transparent transparent;
       }
       .bubble-text {
         margin: 0;
@@ -433,24 +433,9 @@
       </div>
     </section>
     <main class="card">
-      <h1>Alexa Marketing Playground</h1>
-      <p>Build a simple marketing page for Alexa with your team.</p>
-      <ul>
-        <li>Change colors, fonts, and layout</li>
-        <li>Add a headline and call-to-action</li>
-        <li>Make it fun and memorable</li>
-      </ul>
       <div class="bubble-box" role="note" aria-label="Bubble quote">
         <p class="bubble-quote">“Ivy, please stop talking”</p>
       </div>
-      <button id="facts-toggle" type="button">Show 5 fun facts about Alexa</button>
-      <ul id="facts-list">
-        <li>Alexa can set timers, alarms, and reminders with simple voice commands.</li>
-        <li>It can control many smart-home devices like lights, plugs, and thermostats.</li>
-        <li>You can create custom voice commands with Alexa Routines.</li>
-        <li>Alexa can play music, podcasts, audiobooks, and radio stations.</li>
-        <li>Developers can build voice apps for Alexa called Skills.</li>
-      </ul>
       <p id="build-time"></p>
     </main>
     <section class="scene" aria-label="Jeff Bezos Alexa message">
